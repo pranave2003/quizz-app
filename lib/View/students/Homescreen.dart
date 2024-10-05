@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../ViewModel/Auth.dart';
+import '../Admin/Addpage.dart';
 
 class StudentHome extends StatefulWidget {
   const StudentHome({super.key});
@@ -45,7 +46,15 @@ class _StudentHomeState extends State<StudentHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return AddQuestionPage();
+                },
+              ));
+            },
+            icon: Icon(Icons.add)),
         backgroundColor: Colors.blue.shade50,
         automaticallyImplyLeading: false,
         actions: [

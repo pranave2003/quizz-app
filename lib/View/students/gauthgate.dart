@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'Googlelogin.dart';
 import 'Homescreen.dart';
+import 'Login.dart';
 
 class Gauth extends StatefulWidget {
   const Gauth({super.key});
@@ -21,11 +21,11 @@ class _GauthState extends State<Gauth> {
           builder: (context, snapshot) {
             //user is logged in
             if (snapshot.hasData) {
-              return const GoogleHome();
+              return const StudentHome();
             }
             //user is notlogged in
             else {
-              return Googlelogin();
+              return Login();
             }
           }),
     );

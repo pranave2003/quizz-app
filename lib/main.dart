@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'View/students/Login.dart';
 import 'View/students/Register.dart';
+import 'View/students/gauthgate.dart';
 import 'ViewModel/Auth.dart';
 import 'ViewModel/viewmodel.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Register(),
+        home: Gauth(),
       ),
     );
   }

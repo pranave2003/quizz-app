@@ -85,18 +85,13 @@ class Auth extends ChangeNotifier {
           // StatefulBuilder allows you to manage state within the dialog
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Register User'),
+              backgroundColor: Colors.blue.shade50,
+              title: Text('Select Details'),
               content: SingleChildScrollView(
                 // SingleChildScrollView ensures content is scrollable if it overflows
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Display user information
-                    Text("Name: $name"),
-                    SizedBox(height: 8),
-                    Text("Email: $email"),
-                    SizedBox(height: 16),
-
                     // Dropdown for Trade Selection
                     DropdownButtonFormField<String>(
                       decoration: InputDecoration(
@@ -145,9 +140,8 @@ class Auth extends ChangeNotifier {
                 ),
               ),
               actions: [
-                ElevatedButton(
-                  onPressed: () async {
-                    // Validate selections
+                GestureDetector(
+                  onTap: () async {
                     if (selectedTrade == null || selectedLocation == null) {
                       // Show a SnackBar or another dialog to inform the user
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -180,13 +174,20 @@ class Auth extends ChangeNotifier {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Registration Successful!")),
                     );
-
-                    // Close the dialog
-
-                    // Optionally, navigate to another screen
-                    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
                   },
-                  child: Text('Register'),
+                  child: Container(
+                    height: 50,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.orange,
+                    ),
+                    child: Center(
+                        child: Text(
+                      "SUBMIT",
+                      style: TextStyle(fontSize: 25),
+                    )),
+                  ),
                 ),
               ],
             );

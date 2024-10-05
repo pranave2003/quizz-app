@@ -1,45 +1,101 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// lib/ViewModel/quiz_viewmodel.dart
+
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../Model/Questions.dart';
 
 class QuizViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<Question> _questions = [];
+  List<int> _selectedOptions = [];
+  int _currentQuestionIndex = 0;
+  int _score = 0;
+  bool _isQuizCompleted = false;
 
-  // List to store questions fetched from Firestore
-  List<Question> questions = [];
+  List<Question> get questions => _questions;
+  int get currentQuestionIndex => _currentQuestionIndex;
+  int get score => _score;
+  bool get isQuizCompleted => _isQuizCompleted;
 
-  // Score tracking
-  int correctCount = 0;
-  int incorrectCount = 0;
-
-  // To track which questions have been attempted
-  List<int> attemptedQuestions = [];
-
-  // Fetch all questions from Firestore
+  // Fetch questions from Firestore
   Future<void> fetchQuestions() async {
-    final snapshot = await _firestore.collection('questions').get();
-    questions = snapshot.docs
-        .map((doc) => Question.fromMap(doc.data() as Map<String, dynamic>))
-        .toList();
-    notifyListeners(); // Notify listeners that data has changed
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('questions').get();
+      _questions = snapshot.docs
+          .map((doc) => Question.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+      _selectedOptions = List<int>.filled(
+          _questions.length, -1); // Initialize with -1 (no selection)
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching questions: $e');
+    }
   }
 
   // Add a question to Firestore
   Future<void> addQuestion(Question question) async {
-    await _firestore.collection('questions').add(question.toMap());
-    notifyListeners();
+    try {
+      DocumentReference docRef =
+          await _firestore.collection('questions').add(question.toMap());
+      // Optionally, fetch the updated list
+      await fetchQuestions();
+      notifyListeners();
+    } catch (e) {
+      print('Error adding question: $e');
+    }
   }
 
-  // Check if the selected answer is correct
-  void checkAnswer(int selectedOption, int correctOption, int questionIndex) {
-    if (!attemptedQuestions.contains(questionIndex)) {
-      if (selectedOption == correctOption) {
-        correctCount++;
-      } else {
-        incorrectCount++;
-      }
-      attemptedQuestions.add(questionIndex);
-      notifyListeners(); // Notify listeners that score has been updated
+  // Get the count of questions for a specific date
+  Future<int> questionCountForDate(String date) async {
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('questions')
+          .where('date', isEqualTo: date)
+          .get();
+      return snapshot.docs.length;
+    } catch (e) {
+      print('Error counting questions: $e');
+      return 0;
     }
+  }
+
+  // Select an option for the current question
+  void selectOption(int optionIndex) {
+    if (_currentQuestionIndex < _questions.length) {
+      _selectedOptions[_currentQuestionIndex] = optionIndex;
+      notifyListeners();
+    }
+  }
+
+  // Move to the next question
+  void nextQuestion() {
+    if (_currentQuestionIndex < _questions.length - 1) {
+      _currentQuestionIndex++;
+      notifyListeners();
+    } else {
+      _isQuizCompleted = true;
+      calculateScore();
+      notifyListeners();
+    }
+  }
+
+  // Calculate the score based on selected options
+  void calculateScore() {
+    _score = 0;
+    for (int i = 0; i < _questions.length; i++) {
+      if (_selectedOptions[i] == _questions[i].correctOption) {
+        _score++;
+      }
+    }
+  }
+
+  // Reset the quiz to initial state
+  void resetQuiz() {
+    _currentQuestionIndex = 0;
+    _score = 0;
+    _isQuizCompleted = false;
+    _selectedOptions = List<int>.filled(_questions.length, -1);
+    notifyListeners();
   }
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../ViewModel/Auth.dart';
+import '../../main.dart';
 
 
 class StudentHome extends StatefulWidget {
@@ -48,7 +49,9 @@ class _StudentHomeState extends State<StudentHome> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-
+Navigator.push(context, MaterialPageRoute(builder: (context) {
+  return HomePage();
+},));
             },
             icon: Icon(Icons.add)),
         backgroundColor: Colors.blue.shade50,

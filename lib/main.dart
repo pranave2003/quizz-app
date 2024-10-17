@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'View/admin/QuestionProvider.dart';
+import 'View/admin/admin_page.dart';
 import 'View/students/Login.dart';
 import 'View/students/Register.dart';
 import 'View/students/gauthgate.dart';
 import 'ViewModel/Auth.dart';
-import 'ViewModel/viewmodel.dart';
+
 import 'package:firebase_core/firebase_core.dart';
+
+import 'View/students/quiz/quiz_page.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -17,12 +21,13 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<QuizViewModel>(
-          create: (_) => QuizViewModel(),
-        ),
+
         ChangeNotifierProvider<Auth>(
           create: (_) => Auth(),
         ),
+        ChangeNotifierProvider<QuestionProvider>(
+          create: (context) => QuestionProvider(),
+        )
         // Add more providers here if needed
       ],
       child: MyApp(),
@@ -44,6 +49,36 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: Gauth(),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Quiz App')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => AdminPage()));
+              },
+              child: Text('Admin Module'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => UserQuizPage()));
+              },
+              child: Text('User Module'),
+            ),
+          ],
+        ),
       ),
     );
   }

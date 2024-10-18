@@ -123,12 +123,13 @@ class _LoginState extends State<Login> {
                     validator: _validatePassword,
                   ),
                   SizedBox(height: 40.h),
-
                   // Login Button
                   GestureDetector(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         // Proceed with login logic
+                        Provider.of<Auth>(context, listen: false)
+                            .loginWithCredentials(context, _emailController.text, _passwordController.text);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Logging in...')),
                         );

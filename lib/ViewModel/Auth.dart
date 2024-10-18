@@ -63,6 +63,8 @@ class Auth extends ChangeNotifier {
     }
   }
 
+
+
   final List<String> trades = ['FLUTTER', 'MERN', 'PYTHON', 'DIGITAL_MARKET'];
   final List<String> locations = [
     'KOZHIKODE',
@@ -197,6 +199,112 @@ class Auth extends ChangeNotifier {
     );
   }
 
+  //  siging with credential
+  // Future<dynamic> Sigingwithcredential (BuildContext context, String name, String email, String password,
+  //     String selectedTrade, String selectedLocation) async
+  // {
+  //   try {
+  //     final credential =
+  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //
+  //     await FirebaseFirestore.instance
+  //         .collection('Softstudents')
+  //         .doc(credential.user!.uid)
+  //         .set({
+  //       "name": name,
+  //       "email": email,
+  //       "imageUrl": "image",
+  //       "userId": credential.user!.uid,
+  //       "Trade": selectedTrade,
+  //       "OfficeLocation": selectedLocation,
+  //     });
+  //
+  //     Navigator.push(context, MaterialPageRoute(
+  //       builder: (context) {
+  //         return Login();
+  //       },
+  //     ));
+  //     print("Added success");
+  //   } on FirebaseAuthException catch (e) {
+  //     if (e.code == 'weak-password') {
+  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //           content: Text(
+  //             "The password provided is too weak",
+  //             style: TextStyle(color: Colors.amberAccent),
+  //           )));
+  //       print('The password provided is too weak.');
+  //     } else if (e.code == 'email-already-in-use') {
+  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //           content: Text(
+  //             "he account already exists for that email.",
+  //             style: TextStyle(color: Colors.red),
+  //           )));
+  //       print('The account already exists for that email.');
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  // sighin with credential login
+  // Future<void> Credentiallogin(BuildContext context, String email,String password,) async {
+  //   try {
+  //
+  //     await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //         email: email, password: password);
+  //     print("done");
+  //     final user = await FirebaseFirestore.instance
+  //         .collection('Softstudents')
+  //         .where('email', isEqualTo: email)
+  //         .where('password', isEqualTo: password)
+  //         .get();
+  //     if (user.docs.isNotEmpty) {
+  //       String  userid = user.docs[0].id;
+  //
+  //       SharedPreferences data = await SharedPreferences.getInstance();
+  //       data.setString('userId', userid);
+  //       Navigator.pushReplacement(context, MaterialPageRoute(
+  //         builder: (context) {
+  //           return StudentHome();
+  //         },
+  //       ));
+  //     }
+  //
+  //
+  //
+  //   } on FirebaseAuthException catch (e) {
+  //
+  //
+  //     print("error is $e");
+  //
+  //     if (e.code == 'invalid-email') {
+  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //           content: Text(
+  //             "The email address is badly formatted",
+  //             style: TextStyle(color: Colors.white),
+  //           )));
+  //       // Handle user not found error
+  //     }
+  //     if (e.code == 'invalid-credential') {
+  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //           content: Text(
+  //             " incorrect  username and password ",
+  //             style: TextStyle(color: Colors.red),
+  //           )));
+  //       // Handle user not found error
+  //     } else if (e.code == 'too-many-requests') {
+  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //           content: Text(
+  //             "We have blocked all requests from this device due to unusual activity",
+  //             style: TextStyle(color: Colors.white),
+  //           )));
+  //     }
+  //   }
+  // }
+
 //   log out
 
   logout(BuildContext context) async {
@@ -206,9 +314,120 @@ class Auth extends ChangeNotifier {
         MaterialPageRoute(
           builder: (context) => Login(),
         ));
+    notifyListeners();
   }
 
 //   Loading
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+
+  User? get user => _user;
+
+  // Constructor to check if a user is already logged in
+  AuthProvider() {
+    _user = _auth.currentUser;
+  }
+
+  // Sign up function
+  Future<void> signUpWithCredentials(BuildContext context, String name, String email, String password,
+      String selectedTrade, String selectedLocation) async {
+    try {
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      _user = credential.user;
+
+      await FirebaseFirestore.instance.collection('Softstudents')
+          .doc(_user!.uid).set({
+        "name": name,
+        "email": email,
+        "imageUrl": "image",
+        "userId": _user!.uid,
+        "Trade": selectedTrade,
+        "OfficeLocation": selectedLocation,
+      });
+
+      // Navigate to Login screen after successful registration
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+
+      notifyListeners(); // Notify listeners about authentication state change
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            "The password provided is too weak.",
+            style: TextStyle(color: Colors.amberAccent),
+          ),
+        ));
+      } else if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            "The account already exists for that email.",
+            style: TextStyle(color: Colors.red),
+          ),
+        ));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // Login function
+  Future<void> loginWithCredentials(BuildContext context, String email, String password) async {
+    try {
+      final credential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      _user = credential.user;
+
+      if (_user != null) {
+        // Navigate to Home screen after successful login
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StudentHome()));
+
+        notifyListeners(); // Notify listeners about authentication state change
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            "No user found for that email.",
+            style: TextStyle(color: Colors.red),
+          ),
+        ));
+      } else if (e.code == 'wrong-password') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            "Wrong password provided.",
+            style: TextStyle(color: Colors.red),
+          ),
+        ));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // Sign out function
+  Future<void> signOut(BuildContext context) async {
+    await _auth.signOut();
+    _user = null;
+    notifyListeners(); // Notify listeners when the user logs out
+  }
+
+
+
+
+
+
+
+
+
+
 
   loading(isloding) async {
     if (isloding) {

@@ -192,6 +192,14 @@ class _RegisterState extends State<Register> {
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         // If all fields are valid, proceed with registration
+                        Provider.of<Auth>(context, listen: false)
+                            .signUpWithCredentials(
+                                context,
+                                _nameController.text,
+                                _emailController.text,
+                                _passwordController.text,
+                                _selectedTrade.toString(),
+                                _selectedLocation.toString());
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Registering...')),
                         );

@@ -40,7 +40,6 @@ class _StudentHomeState extends State<StudentHome> {
                 final userid = userData['userId'] ?? '';
                 final emailid = userData['email'] ?? '';
 
-
                 return SafeArea(
                   child: Column(
                     children: [
@@ -76,6 +75,7 @@ class _StudentHomeState extends State<StudentHome> {
                       SizedBox(
                         height: 30,
                       ),
+                      // ListView of quizzes
                       Expanded(
                         child: StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
@@ -106,101 +106,140 @@ class _StudentHomeState extends State<StudentHome> {
 
                                 uniqueDates
                                     .add(assignedDate); // Add date to set
-                                double exampleProgress =
-                                    60 * 0.01; // 0.2, 0.4, etc.
 
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) {
-                                        return QuizPage(
-                                            assignedDate:
-                                                quiz["Assigneddate"].toString(),
-                                            Userid: userid,
-                                          trade:trade,
-                                          location:location,
-                                          email:emailid,
-                                          image:imageUrl,
+                                // Check if user has attended the quiz on this date
+                                return FutureBuilder<QuerySnapshot>(
+                                  future: FirebaseFirestore.instance
+                                      .collection("Submitanswer")
+                                      .where("userid", isEqualTo: userid)
+                                      .where("Assigneddate",
+                                          isEqualTo: assignedDate)
+                                      .get(),
+                                  builder: (context, attendanceSnapshot) {
+                                    if (attendanceSnapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    }
+                                    if (attendanceSnapshot.hasError) {
+                                      return Center(
+                                          child: Text(
+                                              "Error: ${attendanceSnapshot.error}"));
+                                    }
 
-                                        );
+                                    var attended = attendanceSnapshot
+                                        .data!.docs.isNotEmpty;
+                                    var score = attended
+                                        ? attendanceSnapshot
+                                            .data!.docs.first["scrore"]
+                                        : 0;
+
+                                    var progress = attended ? score / 100 : 0.0;
+                                    var statusText =
+                                        attended ? "" : "Pending";
+                                    var perfomance = attended
+                                        ? score < 30
+                                            ? "week":score>30&&score<70?"avarage":score>70?"good"
+                                            : "data"
+                                        : "";
+
+                                    return GestureDetector(
+                                      onTap: () {
+                                        if (!attended) {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                            builder: (context) {
+                                              return QuizPage(
+                                                assignedDate:
+                                                    quiz["Assigneddate"]
+                                                        .toString(),
+                                                Userid: userid,
+                                                trade: trade,
+                                                location: location,
+                                                email: emailid,
+                                                image: imageUrl,
+                                              );
+                                            },
+                                          ));
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  "You have already attended this quiz."),
+                                            ),
+                                          );
+                                        }
                                       },
-                                    ));
+                                      child: Card(
+                                        color: attended?Colors.green.shade50:Colors.grey.shade100,
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Text(
+                                                  "Aptitude",
+                                                  style:
+                                                      TextStyle(fontSize: 25),
+                                                ),
+                                                SizedBox(width: 100),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child:
+                                                      CircularPercentIndicator(
+                                                    radius: 40.0,
+                                                    lineWidth: 5.0,
+                                                    percent: progress,
+                                                    center: Text("$score/100"),
+                                                    progressColor: attended
+                                                        ? Colors.green
+                                                        : Colors.grey.shade900,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Row(
+                                                    children: [
+                                                      Text("Performance: "),
+                                                      Text(
+                                                        statusText,
+                                                        style: TextStyle(
+                                                            color: attended
+                                                                ? Colors.green
+                                                                : Colors.red),
+                                                      ),
+                                                      Text(perfomance)
+                                                    ],
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 30),
+                                                  child: Text(
+                                                    assignedDate,
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
                                   },
-                                  child: Card(
-                                   child:  FutureBuilder(
-                                     future: FirebaseFirestore.instance.collection("Submitanswer").where("userid",isEqualTo: userid).get(),
-                                     builder: (context, snapshot) {
-                                       if (snapshot.connectionState == ConnectionState.waiting) {
-                                         return Center(
-                                           child: CircularProgressIndicator(),
-                                         );
-                                       }
-                                       if (snapshot.hasError) {
-                                         return Center(
-                                           child: Text("Error:${snapshot.error}"),
-                                         );
-                                       }
-
-
-                                       return Column(
-                                         children: [
-                                           Row(
-                                             mainAxisAlignment:
-                                             MainAxisAlignment.spaceEvenly,
-                                             children: [
-                                               Text(
-                                                 "Aptitude ${index + 1}",
-                                                 style: TextStyle(fontSize: 25),
-                                               ),
-                                               SizedBox(width: 100),
-                                               Padding(
-                                                 padding:
-                                                 const EdgeInsets.all(8.0),
-                                                 child: CircularPercentIndicator(
-                                                   radius: 40.0,
-                                                   lineWidth: 5.0,
-                                                   percent: exampleProgress,
-                                                   center: Text("0/100"),
-                                                   progressColor: Colors.grey,
-                                                 ),
-                                               ),
-                                             ],
-                                           ),
-                                           Row(
-                                             mainAxisAlignment:
-                                             MainAxisAlignment.spaceBetween,
-                                             children: [
-                                               Padding(
-                                                 padding:
-                                                 const EdgeInsets.all(8.0),
-                                                 child: Row(
-                                                   children: [
-                                                     Text("Performance: "),
-                                                     Text(
-                                                       "pending",
-                                                       style: TextStyle(
-                                                           color: Colors.green),
-                                                     ),
-                                                   ],
-                                                 ),
-                                               ),
-                                               Padding(
-                                                 padding: const EdgeInsets.only(
-                                                     right: 30),
-                                                 child: Text(
-                                                   assignedDate,
-                                                   style: TextStyle(
-                                                       color: Colors.red),
-                                                 ),
-                                               ),
-                                             ],
-                                           ),
-                                         ],
-                                       );
-                                     },
-
-                                   ),
-                                  ),
                                 );
                               },
                             );

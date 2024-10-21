@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../Homescreen.dart';
+
 class QuizPage extends StatefulWidget {
-
-
-final String assignedDate;
-  QuizPage({required this.assignedDate});
+  final String assignedDate;
+  final String Userid;
+  final String location;
+  final String trade;
+  final String email;
+  final String image;
+  QuizPage(
+      {required this.assignedDate,
+      required this.Userid,
+      required this.location,
+      required this.trade,
+      required this.email,
+      required this.image});
   @override
   _QuizPageState createState() => _QuizPageState();
 }
@@ -16,7 +27,8 @@ class _QuizPageState extends State<QuizPage> {
   int _score = 0;
   int _selectedIndex = -1;
   int _correctAnswer = -1;
-  bool _isAnswered = false; // Track if the user has answered the current question
+  bool _isAnswered =
+      false; // Track if the user has answered the current question
 
   @override
   void initState() {
@@ -25,10 +37,14 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   Future<void> _loadQuestions() async {
-    final QuerySnapshot snapshot =
-    await FirebaseFirestore.instance.collection('quiz_questions').where("dateAdded",isEqualTo:widget.assignedDate).get();
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('quiz_questions')
+        .where("dateAdded", isEqualTo: widget.assignedDate)
+        .get();
     setState(() {
-      _questions = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      _questions = snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
     });
   }
 
@@ -61,6 +77,16 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _showFinalScoreDialog() {
+    FirebaseFirestore.instance.collection("Submitanswer").add({
+      "Assigneddate": widget.assignedDate,
+      "scrore": _score*4,
+      "userid": widget.Userid,
+      "location":widget.location,
+      "trade":widget.trade,
+      "image":widget.image,
+      "email":widget.email
+
+    });
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -69,8 +95,10 @@ class _QuizPageState extends State<QuizPage> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context); // Exit the quiz page
+             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+               return StudentHome();
+             },));
+              // Exit the quiz page
             },
             child: Text('OK'),
           ),
@@ -96,7 +124,8 @@ class _QuizPageState extends State<QuizPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quiz - Question ${_currentQuestionIndex + 1}/${_questions.length}'),
+        title: Text(
+            'Quiz - Question ${_currentQuestionIndex + 1}/${_questions.length}'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -111,13 +140,19 @@ class _QuizPageState extends State<QuizPage> {
             Column(
               children: List.generate(options.length, (optionIndex) {
                 return GestureDetector(
-                  onTap: _isAnswered ? null : () => _submitAnswer(optionIndex), // Disable tap after answer
-                  child: Container(width: 200,
+                  onTap: _isAnswered
+                      ? null
+                      : () => _submitAnswer(
+                          optionIndex), // Disable tap after answer
+                  child: Container(
+                    width: 200,
                     margin: EdgeInsets.only(bottom: 10),
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: _selectedIndex == optionIndex
-                          ? (_selectedIndex == correctOption ? Colors.green : Colors.red)
+                          ? (_selectedIndex == correctOption
+                              ? Colors.green
+                              : Colors.red)
                           : Colors.grey[200],
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -131,7 +166,9 @@ class _QuizPageState extends State<QuizPage> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _isAnswered ? _nextQuestion : null, // Only move to next if answered
+              onPressed: _isAnswered
+                  ? _nextQuestion
+                  : null, // Only move to next if answered
               child: Text(_currentQuestionIndex == _questions.length - 1
                   ? 'Submit Quiz'
                   : 'Next Question'),

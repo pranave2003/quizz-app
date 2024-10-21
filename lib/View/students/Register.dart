@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:social_login_buttons/social_login_buttons.dart';
-import '../../ViewModel/Auth.dart';
+import '../../ViewModel/user/Auth.dart';
 import 'Login.dart';
 
 class Register extends StatefulWidget {

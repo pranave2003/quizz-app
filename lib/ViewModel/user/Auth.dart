@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../View/students/Homescreen.dart';
-import '../View/students/Login.dart';
+import '../../View/students/Homescreen.dart';
+import '../../View/students/Login.dart';
 
 class Auth extends ChangeNotifier {
+
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<void> signInWithGoogle(BuildContext context) async {
@@ -199,111 +200,6 @@ class Auth extends ChangeNotifier {
     );
   }
 
-  //  siging with credential
-  // Future<dynamic> Sigingwithcredential (BuildContext context, String name, String email, String password,
-  //     String selectedTrade, String selectedLocation) async
-  // {
-  //   try {
-  //     final credential =
-  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //       email: email,
-  //       password: password,
-  //     );
-  //
-  //     await FirebaseFirestore.instance
-  //         .collection('Softstudents')
-  //         .doc(credential.user!.uid)
-  //         .set({
-  //       "name": name,
-  //       "email": email,
-  //       "imageUrl": "image",
-  //       "userId": credential.user!.uid,
-  //       "Trade": selectedTrade,
-  //       "OfficeLocation": selectedLocation,
-  //     });
-  //
-  //     Navigator.push(context, MaterialPageRoute(
-  //       builder: (context) {
-  //         return Login();
-  //       },
-  //     ));
-  //     print("Added success");
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'weak-password') {
-  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //           content: Text(
-  //             "The password provided is too weak",
-  //             style: TextStyle(color: Colors.amberAccent),
-  //           )));
-  //       print('The password provided is too weak.');
-  //     } else if (e.code == 'email-already-in-use') {
-  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //           content: Text(
-  //             "he account already exists for that email.",
-  //             style: TextStyle(color: Colors.red),
-  //           )));
-  //       print('The account already exists for that email.');
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
-  // sighin with credential login
-  // Future<void> Credentiallogin(BuildContext context, String email,String password,) async {
-  //   try {
-  //
-  //     await FirebaseAuth.instance.signInWithEmailAndPassword(
-  //         email: email, password: password);
-  //     print("done");
-  //     final user = await FirebaseFirestore.instance
-  //         .collection('Softstudents')
-  //         .where('email', isEqualTo: email)
-  //         .where('password', isEqualTo: password)
-  //         .get();
-  //     if (user.docs.isNotEmpty) {
-  //       String  userid = user.docs[0].id;
-  //
-  //       SharedPreferences data = await SharedPreferences.getInstance();
-  //       data.setString('userId', userid);
-  //       Navigator.pushReplacement(context, MaterialPageRoute(
-  //         builder: (context) {
-  //           return StudentHome();
-  //         },
-  //       ));
-  //     }
-  //
-  //
-  //
-  //   } on FirebaseAuthException catch (e) {
-  //
-  //
-  //     print("error is $e");
-  //
-  //     if (e.code == 'invalid-email') {
-  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //           content: Text(
-  //             "The email address is badly formatted",
-  //             style: TextStyle(color: Colors.white),
-  //           )));
-  //       // Handle user not found error
-  //     }
-  //     if (e.code == 'invalid-credential') {
-  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //           content: Text(
-  //             " incorrect  username and password ",
-  //             style: TextStyle(color: Colors.red),
-  //           )));
-  //       // Handle user not found error
-  //     } else if (e.code == 'too-many-requests') {
-  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //           content: Text(
-  //             "We have blocked all requests from this device due to unusual activity",
-  //             style: TextStyle(color: Colors.white),
-  //           )));
-  //     }
-  //   }
-  // }
 
 //   log out
 
@@ -344,7 +240,7 @@ class Auth extends ChangeNotifier {
           .doc(_user!.uid).set({
         "name": name,
         "email": email,
-        "imageUrl": "image",
+        "imageUrl": "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small_2x/profile-icon-design-free-vector.jpg",
         "userId": _user!.uid,
         "Trade": selectedTrade,
         "OfficeLocation": selectedLocation,
@@ -387,6 +283,8 @@ class Auth extends ChangeNotifier {
 
       if (_user != null) {
         // Navigate to Home screen after successful login
+        SharedPreferences prefs=await SharedPreferences.getInstance();
+        prefs.setString('userId', _user!.uid);
         Navigator.push(context, MaterialPageRoute(builder: (context) => StudentHome()));
 
         notifyListeners(); // Notify listeners about authentication state change

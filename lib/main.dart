@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'View/admin/QuestionProvider.dart';
+import 'ViewModel/admin/QuestionProvider.dart';
 import 'View/admin/admin_page.dart';
-import 'View/students/Login.dart';
-import 'View/students/Register.dart';
+
 import 'View/students/gauthgate.dart';
-import 'ViewModel/Auth.dart';
+import 'ViewModel/user/Auth.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
 import 'View/students/quiz/quiz_page.dart';
+import 'ViewModel/user/userdetails.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -27,7 +27,10 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider<QuestionProvider>(
           create: (context) => QuestionProvider(),
-        )
+        ), ChangeNotifierProvider<UserProvider>(
+          create: (context) => UserProvider(),
+        ),
+
         // Add more providers here if needed
       ],
       child: MyApp(),

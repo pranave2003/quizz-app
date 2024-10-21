@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'QuestionProvider.dart';
+import '../../ViewModel/admin/QuestionProvider.dart';
 import 'add_question_page.dart';
 
 class AdminPage extends StatefulWidget {

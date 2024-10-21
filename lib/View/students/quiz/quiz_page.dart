@@ -34,12 +34,12 @@ class UserQuizPage extends StatelessWidget {
               return ListTile(
                 title: Text('Quiz ${index + 1}'),
                 subtitle: Text(assignedDate),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => QuizPage(assignedDate: quiz["Assigneddate"].toString(),)));
-                },
+                // onTap: () {
+                //   Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) => QuizPage(assignedDate: quiz["Assigneddate"].toString(), Userid: '',)));
+                // },
               );
             },
           );

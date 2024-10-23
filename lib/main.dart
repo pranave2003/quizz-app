@@ -73,13 +73,7 @@ class HomePage extends StatelessWidget {
               },
               child: Text('Admin Module'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => UserQuizPage()));
-              },
-              child: Text('User Module'),
-            ),
+
           ],
         ),
       ),

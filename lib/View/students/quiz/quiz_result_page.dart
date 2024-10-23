@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../Homescreen.dart';
 
@@ -77,30 +79,41 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _showFinalScoreDialog() {
-    FirebaseFirestore.instance.collection("Submitanswer").add({
-      "Assigneddate": widget.assignedDate,
-      "scrore": _score*4,
-      "userid": widget.Userid,
-      "location":widget.location,
-      "trade":widget.trade,
-      "image":widget.image,
-      "email":widget.email
-
-    });
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Quiz Completed'),
-        content: Text('Your final score is: $_score'),
+        backgroundColor: Colors.black,
+        title: Text(
+          'Completed',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+        ),
+        content: Text(
+          'Your final score is: $_score',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           TextButton(
             onPressed: () {
-             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-               return StudentHome();
-             },));
+              FirebaseFirestore.instance.collection("Submitanswer").add({
+                "Assigneddate": widget.assignedDate,
+                "scrore": _score * 4,
+                "userid": widget.Userid,
+                "location": widget.location,
+                "trade": widget.trade,
+                "image": widget.image,
+                "email": widget.email
+              });
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (context) {
+                  return StudentHome();
+                },
+              ));
               // Exit the quiz page
             },
-            child: Text('OK'),
+            child: const Text(
+              'Submit',
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
@@ -124,8 +137,25 @@ class _QuizPageState extends State<QuizPage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(Icons.arrow_back_ios)),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              " Q: ${_currentQuestionIndex + 1}/${_questions.length}",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+          )
+        ],
         title: Text(
-            'Quiz - Question ${_currentQuestionIndex + 1}/${_questions.length}'),
+          "APTITUDE",
+          style: GoogleFonts.abhayaLibre(
+              color: Colors.blue, fontWeight: FontWeight.bold),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -134,7 +164,13 @@ class _QuizPageState extends State<QuizPage> {
           children: [
             Text(
               question['question'],
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+              maxLines: 10, // Limits the text to a specific number of lines
+              overflow: TextOverflow.ellipsis, // Adds "..." if text overflows
+              softWrap: true, // Ensures the text wraps properly
             ),
             SizedBox(height: 20),
             Column(
@@ -145,7 +181,7 @@ class _QuizPageState extends State<QuizPage> {
                       : () => _submitAnswer(
                           optionIndex), // Disable tap after answer
                   child: Container(
-                    width: 200,
+                    width: 1.sw,
                     margin: EdgeInsets.only(bottom: 10),
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -164,14 +200,28 @@ class _QuizPageState extends State<QuizPage> {
                 );
               }),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _isAnswered
-                  ? _nextQuestion
-                  : null, // Only move to next if answered
-              child: Text(_currentQuestionIndex == _questions.length - 1
-                  ? 'Submit Quiz'
-                  : 'Next Question'),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                    onTap: _isAnswered ? _nextQuestion : null,
+                    child: Container(
+                      height: 50,
+                      width: 200,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.blue),
+                      child: Center(
+                        child: Text(
+                          _currentQuestionIndex == _questions.length - 1
+                              ? "SUBMIT"
+                              : "NEXT",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    )),
+              ],
             ),
           ],
         ),

@@ -16,6 +16,9 @@ class StudentHome extends StatefulWidget {
 }
 
 class _StudentHomeState extends State<StudentHome> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +29,10 @@ class _StudentHomeState extends State<StudentHome> {
             stream: userProvider.userStream,
             builder: (context, userSnapshot) {
               if (userSnapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: Colors.red,
+                ));
               } else if (userSnapshot.hasError) {
                 return Center(child: Text('Error: ${userSnapshot.error}'));
               } else if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
@@ -118,7 +124,10 @@ class _StudentHomeState extends State<StudentHome> {
                           builder: (context, quizSnapshot) {
                             if (quizSnapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
+                              return Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.red,
+                              ));
                             } else if (quizSnapshot.hasError) {
                               return Center(
                                   child: Text('Error: ${quizSnapshot.error}'));
@@ -153,7 +162,9 @@ class _StudentHomeState extends State<StudentHome> {
                                     if (attendanceSnapshot.connectionState ==
                                         ConnectionState.waiting) {
                                       return Center(
-                                          child: CircularProgressIndicator());
+                                          child: CircularProgressIndicator(
+                                        color: Colors.red,
+                                      ));
                                     }
                                     if (attendanceSnapshot.hasError) {
                                       return Center(
@@ -183,21 +194,85 @@ class _StudentHomeState extends State<StudentHome> {
                                     return GestureDetector(
                                       onTap: () {
                                         if (!attended) {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(
-                                            builder: (context) {
-                                              return QuizPage(
-                                                assignedDate:
-                                                    quiz["Assigneddate"]
-                                                        .toString(),
-                                                Userid: userid,
-                                                trade: trade,
-                                                location: location,
-                                                email: emailid,
-                                                image: imageUrl,
-                                              );
-                                            },
-                                          ));
+                                          showModalBottomSheet(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Center(
+                                                        child: Text(
+                                                          "Notice",
+                                                          style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 16),
+                                                      Text("1.Please read carefully each question, and finally, you will choose the correct option."),
+
+                                                      SizedBox(height: 8),
+                                                      Text("2. Each question carries 4 marks, for a total of 25 questions."),
+                                                      SizedBox(height: 8),
+                                                      Text("3. You will have a single attempt to answer the questions."),
+
+                                                      SizedBox(height: 30),
+                                                      Center(
+                                                        child: GestureDetector(onTap: (){
+                                                          Navigator.push(context,
+                                                              MaterialPageRoute(
+                                                            builder: (context) {
+                                                              return QuizPage(
+                                                                assignedDate:
+                                                                    quiz["Assigneddate"]
+                                                                        .toString(),
+                                                                Userid: userid,
+                                                                trade: trade,
+                                                                location: location,
+                                                                email: emailid,
+                                                                image: imageUrl,
+                                                              );
+                                                            },
+                                                          ));
+                                                        },
+
+                                                          child: Container(
+                                                            width: 200,
+                                                            height: 50,
+                                                            decoration: BoxDecoration(
+                                                                color: Colors.black,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10)),
+                                                            child: Center(
+                                                                child: Text(
+                                                              "Start Quiz",
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      Colors.white),
+                                                            )),
+                                                          ),
+                                                        ),
+                                                      ),
+
+                                                      SizedBox(
+                                                        height: 100,
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              });
+
                                         } else {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
@@ -223,7 +298,8 @@ class _StudentHomeState extends State<StudentHome> {
                                                   width: 100,
                                                   decoration: BoxDecoration(
                                                       color: attended
-                                                          ? Colors.green.shade900
+                                                          ? Colors
+                                                              .green.shade900
                                                           : Colors.red,
                                                       borderRadius:
                                                           BorderRadius.circular(

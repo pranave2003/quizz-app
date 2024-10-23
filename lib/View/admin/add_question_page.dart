@@ -20,21 +20,6 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
   int correctOption = 0;
 
 
-  // Future<void> _selectDate(BuildContext context) async {
-  //   final DateTime? picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime(2000),
-  //     lastDate: DateTime(2101),
-  //   );
-  //   if (picked != null) {
-  //     // Format the picked date to dd/MM/yyyy and store in selectedDate
-  //     setState(() {
-  //       selectedDate = DateFormat('dd/MM/yyyy').format(picked);
-  //       print(selectedDate);
-  //     });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

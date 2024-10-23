@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,7 @@ class _StudentHomeState extends State<StudentHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Consumer<UserProvider>(
         builder: (context, userProvider, child) {
           return StreamBuilder<DocumentSnapshot>(
@@ -43,35 +44,68 @@ class _StudentHomeState extends State<StudentHome> {
                 return SafeArea(
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: NetworkImage(imageUrl),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Hi.. $name",
-                                style: GoogleFonts.aboreto(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      SizedBox(
+                        height: 30,
                       ),
-                      SizedBox(height: 20),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          CircleAvatar(radius: 50),
-                          CircleAvatar(radius: 50),
-                          CircleAvatar(radius: 50),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            height: 150.h,
+                            width: 300.w,
+                            decoration: BoxDecoration(
+                                color: Colors.blue.shade50,
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(30),
+                                    topLeft: Radius.circular(30))),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: NetworkImage(imageUrl),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        " $name",
+                                        style: GoogleFonts.aboreto(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "$trade",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
                         ],
                       ),
+                      SizedBox(height: 20),
+
                       SizedBox(
                         height: 30,
                       ),
@@ -135,12 +169,15 @@ class _StudentHomeState extends State<StudentHome> {
                                         : 0;
 
                                     var progress = attended ? score / 100 : 0.0;
-                                    var statusText =
-                                        attended ? "" : "Pending";
+                                    var statusText = attended ? "" : "Pending";
                                     var perfomance = attended
                                         ? score < 30
-                                            ? "week":score>30&&score<70?"avarage":score>70?"good"
-                                            : "data"
+                                            ? "week"
+                                            : score > 30 && score < 70
+                                                ? "avarage"
+                                                : score > 70
+                                                    ? "good"
+                                                    : "data"
                                         : "";
 
                                     return GestureDetector(
@@ -172,17 +209,42 @@ class _StudentHomeState extends State<StudentHome> {
                                         }
                                       },
                                       child: Card(
-                                        color: attended?Colors.green.shade50:Colors.grey.shade100,
+                                        color: attended
+                                            ? Colors.green.shade50
+                                            : Colors.grey.shade200,
                                         child: Column(
                                           children: [
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                Text(
-                                                  "Aptitude",
-                                                  style:
-                                                      TextStyle(fontSize: 25),
+                                                Container(
+                                                  height: 50,
+                                                  width: 100,
+                                                  decoration: BoxDecoration(
+                                                      color: attended
+                                                          ? Colors.green.shade900
+                                                          : Colors.red,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                  child: Center(
+                                                    child: attended
+                                                        ? Text(
+                                                            "Done",
+                                                            style: TextStyle(
+                                                                fontSize: 25,
+                                                                color: Colors
+                                                                    .white),
+                                                          )
+                                                        : Text(
+                                                            "TRY",
+                                                            style: TextStyle(
+                                                                fontSize: 25,
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                  ),
                                                 ),
                                                 SizedBox(width: 100),
                                                 Padding(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'Navigation/Aptitude/shedule_page.dart';
-import 'Navigation/Addshedule/createAptitude.dart';
+import 'Navigation/Addshedule/Aptitude_Scheduler.dart';
 import 'Navigation/mystudents.dart';
 
 class DashboardScreen extends StatefulWidget {

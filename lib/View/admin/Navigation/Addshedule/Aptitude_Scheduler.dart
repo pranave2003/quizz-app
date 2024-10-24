@@ -34,13 +34,11 @@ class _SheadulequastionState extends State<Sheadulequastion> {
   }
 
   Future<void> _submitQuestions() async {
-      await Provider.of<QuestionProvider>(context, listen: false)
-          .submitQuestionsToFirebase(selecteddata: selectedDate);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Questions submitted successfully!')),
-      );
-
-
+    await Provider.of<QuestionProvider>(context, listen: false)
+        .submitQuestionsToFirebase(selecteddata: selectedDate);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Questions submitted successfully!')),
+    );
   }
 
   @override
@@ -160,56 +158,67 @@ class _SheadulequastionState extends State<Sheadulequastion> {
             ),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(bottom: 100),
+              padding: const EdgeInsets.only(bottom: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  InkWell(onTap:(){_submitQuestions();},
+                  InkWell(
+                    onTap: () {
+                      _submitQuestions();
+                    },
                     child: Container(
                       height: 50, // Adjust the height as needed
                       width: 200, // Adjust the width as needed
                       padding:
                           const EdgeInsets.all(16.0), // Add padding for spacing
                       decoration: BoxDecoration(
-                        color: Colors.blue.shade900,
+                        color: Colors.green.shade900,
                         // Optional border
                         borderRadius: BorderRadius.circular(
                             8.0), // Optional rounded corners
                       ),
                       child: Center(
                           child: Text(
-                        "Submit To Firebase",
+                        "Submit All Question",
                         style: TextStyle(color: Colors.white),
                       )),
+                    ),
+                  ),
+                  GestureDetector(onTap: () {
+                    if (selectedDate != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Createaptitude_sub(
+                            quizDate: selectedDate,
+                            onQuestionAdded: () => questionProvider.loadQuestions(),
+                          ),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('First pick your date')),
+                      );
+                    }
+                  },
+                    child: Container(
+                      height: 50,
+                      width: 200,
+                      decoration: BoxDecoration(
+                          color: Colors.blue.shade900,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                          child: Text(
+                            "Ceate Shedule",
+                            style: TextStyle(color: Colors.white),
+                          )),
                     ),
                   ),
                 ],
               ),
             ),
-
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blueAccent,
-        onPressed: () {
-          if (selectedDate != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Createaptitude_sub(
-                  quizDate: selectedDate,
-                  onQuestionAdded: () => questionProvider.loadQuestions(),
-                ),
-              ),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('First pick your date')),
-            );
-          }
-        },
-        child: Icon(Icons.add),
       ),
     );
   }

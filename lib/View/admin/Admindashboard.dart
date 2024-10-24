@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import 'Navigation/createAptitude.dart';
+import 'Navigation/Aptitude/shedule_page.dart';
+import 'Navigation/Addshedule/createAptitude.dart';
 import 'Navigation/mystudents.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -15,8 +17,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // List of widgets that corresponds to each tab
   final List<Widget> _pages = [
     StudentListScreen(),
-    AptitudeScreen(),
-    AdminPage(),
+    AptitudePage(),
+    Sheadulequastion(),
     LeavesScreen(),
     MyProfileScreen(),
     MyProfileScreen(),
@@ -59,13 +61,13 @@ class NavigationPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 200,
-      color: Colors.blue.shade50,
+      color: Colors.blue.shade900,
       child: Column(
         children: [
           DrawerHeader(
             child: Text(
               'IQ',
-              style: TextStyle(fontSize: 45, color: Colors.blueAccent),
+              style: GoogleFonts.abrilFatface(fontSize: 40,color: Colors.white),
             ),
           ),
           NavButton(
@@ -81,13 +83,13 @@ class NavigationPanel extends StatelessWidget {
             onTap: () => onTap(1), // Call onTap with index 1
           ),
           NavButton(
-            icon: CupertinoIcons.add,
-            label: 'Create Aptitude',
+            icon: CupertinoIcons.calendar,
+            label: 'Schedule Question',
             isSelected: currentIndex == 2, // Check if this button is selected
             onTap: () => onTap(2), // Call onTap with index 2
           ),
           NavButton(
-            icon: Icons.calendar_today,
+            icon: Icons.stacked_bar_chart,
             label: 'Result',
             isSelected: currentIndex == 3, // Check if this button is selected
             onTap: () => onTap(3), // Call onTap with index 3
@@ -122,14 +124,14 @@ class NavButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        color: isSelected ? Colors.blue.shade900 : Colors.transparent, // Change color if selected
+        color: isSelected ? Colors.blue : Colors.transparent, // Change color if selected
         child: ListTile(
-          leading: Icon(icon, color: isSelected ? Colors.white : Colors.black),
+          leading: Icon(icon, color: isSelected ? Colors.white : Colors.white),
           title: Text(
             label,
             style: TextStyle(
               fontSize: 16,
-              color: isSelected ? Colors.white : Colors.black, // Change text color if selected
+              color: isSelected ? Colors.white : Colors.white, // Change text color if selected
             ),
           ),
         ),

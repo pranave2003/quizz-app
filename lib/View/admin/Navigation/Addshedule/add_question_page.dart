@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../ViewModel/admin/QuestionProvider.dart';
+import '../../../../ViewModel/admin/QuestionProvider.dart';
 
-class AddQuestionPage extends StatefulWidget {
+class Createaptitude_sub extends StatefulWidget {
   final  quizDate;
   final Function onQuestionAdded;
 
-  AddQuestionPage({required this.quizDate, required this.onQuestionAdded});
+  Createaptitude_sub({required this.quizDate, required this.onQuestionAdded});
 
   @override
-  _AddQuestionPageState createState() => _AddQuestionPageState();
+  _Createaptitude_subState createState() => _Createaptitude_subState();
 }
 
-class _AddQuestionPageState extends State<AddQuestionPage> {
+class _Createaptitude_subState extends State<Createaptitude_sub> {
   final _formKey = GlobalKey<FormState>();
   String questionText = '';
   List<String> options = List.filled(4, '');

@@ -71,7 +71,7 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => AdminPage()));
+                    context, MaterialPageRoute(builder: (_) => quastionaddpage()));
               },
               child: Text('Admin Module'),
             ),

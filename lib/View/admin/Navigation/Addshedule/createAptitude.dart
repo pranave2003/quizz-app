@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../ViewModel/admin/QuestionProvider.dart';
+import '../../../../ViewModel/admin/QuestionProvider.dart';
 import 'add_question_page.dart';
 
-class AdminPage extends StatefulWidget {
+class Sheadulequastion extends StatefulWidget {
   @override
-  _AdminPageState createState() => _AdminPageState();
+  _SheadulequastionState createState() => _SheadulequastionState();
 }
 
-class _AdminPageState extends State<AdminPage> {
+class _SheadulequastionState extends State<Sheadulequastion> {
   String? selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
@@ -159,44 +159,34 @@ class _AdminPageState extends State<AdminPage> {
                     ),
             ),
             SizedBox(height: 10),
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: 100),
-            //   child: GestureDetector(
-            //     onTap: () => _submitQuestions,
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         Container(
-            //           height: 50, // Adjust the height as needed
-            //           width: 200, // Adjust the width as needed
-            //           padding:
-            //               const EdgeInsets.all(16.0), // Add padding for spacing
-            //           decoration: BoxDecoration(
-            //             color: Colors.blue.shade900,
-            //             // Optional border
-            //             borderRadius: BorderRadius.circular(
-            //                 8.0), // Optional rounded corners
-            //           ),
-            //           child: Center(
-            //               child: Text(
-            //             "Submit To Firebase",
-            //             style: TextStyle(color: Colors.white),
-            //           )),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            ElevatedButton(
-              onPressed: _submitQuestions,
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  textStyle: TextStyle(fontSize: 18)),
-              child: Center(
-                child: Text('Submit Questions to Firebase'),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 100),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(onTap:(){_submitQuestions();},
+                    child: Container(
+                      height: 50, // Adjust the height as needed
+                      width: 200, // Adjust the width as needed
+                      padding:
+                          const EdgeInsets.all(16.0), // Add padding for spacing
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade900,
+                        // Optional border
+                        borderRadius: BorderRadius.circular(
+                            8.0), // Optional rounded corners
+                      ),
+                      child: Center(
+                          child: Text(
+                        "Submit To Firebase",
+                        style: TextStyle(color: Colors.white),
+                      )),
+                    ),
+                  ),
+                ],
               ),
             ),
+
           ],
         ),
       ),
@@ -207,7 +197,7 @@ class _AdminPageState extends State<AdminPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AddQuestionPage(
+                builder: (context) => Createaptitude_sub(
                   quizDate: selectedDate,
                   onQuestionAdded: () => questionProvider.loadQuestions(),
                 ),

@@ -19,13 +19,30 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
   String? selectedTrade;
   String? selectedLocation;
+  String searchText = '';
+  bool isSearching = false; // This will control the search mode
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue.shade50,
       appBar: AppBar(
-        title: Text('Student List'),
-        backgroundColor: Colors.blue.shade50,
+        title: isSearching
+            ? TextField(
+          controller: searchController,
+          decoration: InputDecoration(
+            hintText: 'Search by name...',
+            border: InputBorder.none,
+          ),
+          onChanged: (value) {
+            setState(() {
+              searchText = value.toLowerCase(); // Make the search case-insensitive
+            });
+          },
+        )
+            : Text('Student List'),
+        backgroundColor: Colors.blue.shade100,
         actions: [
           // Trade Dropdown
           DropdownButton<String>(
@@ -61,6 +78,19 @@ class _StudentListScreenState extends State<StudentListScreen> {
             }).toList(),
           ),
           SizedBox(width: 20),
+          // Search Icon
+          IconButton(
+            icon: Icon(isSearching ? Icons.cancel : Icons.search),
+            onPressed: () {
+              setState(() {
+                if (isSearching) {
+                  searchController.clear();
+                  searchText = ''; // Clear search when cancel is pressed
+                }
+                isSearching = !isSearching; // Toggle search mode
+              });
+            },
+          ),
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -70,13 +100,14 @@ class _StudentListScreenState extends State<StudentListScreen> {
             return Center(child: CircularProgressIndicator());
           }
 
-          // Filter students based on selected trade and location
+          // Filter students based on selected trade, location, and search text
           List<MyStudents> students = snapshot.data!.docs
               .map((doc) => MyStudents.fromDocumentSnapshot(doc))
               .where((student) {
             bool matchesTrade = selectedTrade == null || student.trade == selectedTrade;
             bool matchesLocation = selectedLocation == null || student.officeLocation == selectedLocation;
-            return matchesTrade && matchesLocation;
+            bool matchesSearch = searchText.isEmpty || student.name.toLowerCase().contains(searchText);
+            return matchesTrade && matchesLocation && matchesSearch;
           }).toList();
 
           return ListView.builder(
@@ -94,13 +125,14 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
 class StudentCard extends StatelessWidget {
   final MyStudents student;
-  final int index;  // Changed type to int for index
+  final int index;
 
   StudentCard({required this.student, required this.index});
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       elevation: 4,
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: ListTile(

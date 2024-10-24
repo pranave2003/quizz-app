@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../../Model/admin/navigation/mystudentsmodel.dart';
 
 class StudentListScreen extends StatefulWidget {
@@ -9,16 +8,11 @@ class StudentListScreen extends StatefulWidget {
 }
 
 class _StudentListScreenState extends State<StudentListScreen> {
-  final List<String> trades = ['FLUTTER', 'MERN', 'PYTHON', 'DIGITAL_MARKET'];
-  final List<String> locations = [
-    'KOZHIKODE',
-    'PERINTHALMANNA',
-    'PALAKKAD',
-    'KOCHI'
-  ];
+  final List<String> trades = ['All', 'FLUTTER', 'MERN', 'PYTHON', 'DIGITAL_MARKET'];
+  final List<String> locations = ['All', 'KOZHIKODE', 'PERINTHALMANNA', 'PALAKKAD', 'KOCHI'];
 
-  String? selectedTrade;
-  String? selectedLocation;
+  String? selectedTrade = 'All';
+  String? selectedLocation = 'All';
   String searchText = '';
   bool isSearching = false; // This will control the search mode
   TextEditingController searchController = TextEditingController();
@@ -104,8 +98,8 @@ class _StudentListScreenState extends State<StudentListScreen> {
           List<MyStudents> students = snapshot.data!.docs
               .map((doc) => MyStudents.fromDocumentSnapshot(doc))
               .where((student) {
-            bool matchesTrade = selectedTrade == null || student.trade == selectedTrade;
-            bool matchesLocation = selectedLocation == null || student.officeLocation == selectedLocation;
+            bool matchesTrade = selectedTrade == 'All' || student.trade == selectedTrade;
+            bool matchesLocation = selectedLocation == 'All' || student.officeLocation == selectedLocation;
             bool matchesSearch = searchText.isEmpty || student.name.toLowerCase().contains(searchText);
             return matchesTrade && matchesLocation && matchesSearch;
           }).toList();

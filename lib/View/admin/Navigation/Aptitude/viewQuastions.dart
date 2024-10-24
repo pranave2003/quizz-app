@@ -25,7 +25,7 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
   // Fetch the current status from Firestore
   Future<void> fetchCurrentStatus() async {
     DocumentSnapshot doc =
-    await _firestore.collection('Assigndate').doc(widget.id).get();
+        await _firestore.collection('Assigndate').doc(widget.id).get();
 
     if (doc.exists) {
       setState(() {
@@ -66,8 +66,8 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
   }
 
   // Update a question in Firestore
-  Future<void> updateQuestion(
-      String id, String question, List<String> options, int correctOption) async {
+  Future<void> updateQuestion(String id, String question, List<String> options,
+      int correctOption) async {
     await _firestore.collection('quiz_questions').doc(id).update({
       'question': question,
       'options': options,
@@ -82,16 +82,16 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
   }
 
   // Show a dialog to edit a question
-  Future<void> showUpdateDialog(BuildContext context, String id, String question,
-      List<String> options, int correctOption) async {
+  Future<void> showUpdateDialog(BuildContext context, String id,
+      String question, List<String> options, int correctOption) async {
     TextEditingController questionController =
-    TextEditingController(text: question);
+        TextEditingController(text: question);
     List<TextEditingController> optionControllers = List.generate(
       options.length,
-          (index) => TextEditingController(text: options[index]),
+      (index) => TextEditingController(text: options[index]),
     );
     TextEditingController correctOptionController =
-    TextEditingController(text: correctOption.toString());
+        TextEditingController(text: correctOption.toString());
 
     showDialog(
       context: context,
@@ -109,12 +109,14 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
                 ...List.generate(optionControllers.length, (index) {
                   return TextField(
                     controller: optionControllers[index],
-                    decoration: InputDecoration(labelText: 'Option ${index + 1}'),
+                    decoration:
+                        InputDecoration(labelText: 'Option ${index + 1}'),
                   );
                 }),
                 TextField(
                   controller: correctOptionController,
-                  decoration: InputDecoration(labelText: 'Correct Option Index'),
+                  decoration:
+                      InputDecoration(labelText: 'Correct Option Index'),
                   keyboardType: TextInputType.number,
                 ),
               ],
@@ -130,9 +132,9 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
             TextButton(
               onPressed: () {
                 List<String> updatedOptions =
-                optionControllers.map((c) => c.text).toList();
+                    optionControllers.map((c) => c.text).toList();
                 int updatedCorrectOption =
-                int.parse(correctOptionController.text);
+                    int.parse(correctOptionController.text);
 
                 updateQuestion(
                   id,
@@ -163,12 +165,14 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
           InkWell(
             onTap: toggleStatus, // Toggle status on tap
             child: Container(
-              color: currentStatus == 0 ? Colors.green : Colors.red,
+              decoration: BoxDecoration(
+                  color: currentStatus == 0 ? Colors.green : Colors.red.shade900,
+                  borderRadius: BorderRadius.circular(10)),
               height: 50,
               width: 200,
               child: Center(
                 child: Text(
-                  currentStatus == 0 ? "Tap to publish" : "Unpublish",
+                  currentStatus == 0 ? "Tap to publish" : "Tap to Unpublish",
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -207,14 +211,16 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text('Options:', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('Options:',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: List.generate(
                             question['options'].length,
-                                (i) => Padding(
+                            (i) => Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: Text('${i + 1}. ${question['options'][i]}'),
+                              child:
+                                  Text('${i + 1}. ${question['options'][i]}'),
                             ),
                           ),
                         ),

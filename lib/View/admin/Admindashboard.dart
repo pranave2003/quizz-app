@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quizzapp/View/admin/Navigation/Result/Redult_sheduledate.dart';
 
+import 'Adminloginweb.dart';
 import 'Navigation/Aptitude/shedule_page.dart';
 import 'Navigation/Addshedule/Aptitude_Scheduler.dart';
 import 'Navigation/mystudents.dart';
@@ -19,8 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     StudentListScreen(),
     AptitudePage(),
     Sheadulequastion(),
-    LeavesScreen(),
-    MyProfileScreen(),
+    StudentResultScreen(),
     MyProfileScreen(),
   ];
 
@@ -98,7 +99,11 @@ class NavigationPanel extends StatelessWidget {
             icon: Icons.exit_to_app,
             label: 'Logout',
             isSelected: currentIndex == 4, // Check if this button is selected
-            onTap: () => onTap(4), // Call onTap with index 4
+            onTap: (){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder:  (context) {
+                return AdminLoginweb();
+              },));
+            }, // Call onTap with index 4
           ),
         ],
       ),
@@ -135,58 +140,6 @@ class NavButton extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-// Screen 1: My Students
-class MyStudentsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "This is the My Students screen",
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-// Screen 2: Aptitude
-class AptitudeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "This is the Aptitude screen",
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-// Screen 3: My Tasks
-class MyTasksScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "This is the My Tasks screen",
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-// Screen 4: Leaves
-class LeavesScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "This is the Leaves screen",
-        style: TextStyle(fontSize: 24),
       ),
     );
   }

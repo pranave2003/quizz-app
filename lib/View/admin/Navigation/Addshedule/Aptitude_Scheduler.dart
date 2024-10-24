@@ -184,6 +184,7 @@ class _SheadulequastionState extends State<Sheadulequastion> {
                       )),
                     ),
                   ),
+                  SizedBox(width: 50,),
                   GestureDetector(onTap: () {
                     if (selectedDate != null) {
                       Navigator.push(
@@ -209,7 +210,7 @@ class _SheadulequastionState extends State<Sheadulequastion> {
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
                           child: Text(
-                            "Ceate Shedule",
+                            "Create Shedule",
                             style: TextStyle(color: Colors.white),
                           )),
                     ),

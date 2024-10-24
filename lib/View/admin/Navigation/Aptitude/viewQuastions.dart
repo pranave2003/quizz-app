@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class QuizQuestionsPage extends StatefulWidget {
-  const QuizQuestionsPage({Key? key, required this.date}) : super(key: key);
+  const QuizQuestionsPage({Key? key, required this.date, required this.id})
+      : super(key: key);
+
   final String date;
+  final String id;
 
   @override
   _QuizQuestionsPageState createState() => _QuizQuestionsPageState();
@@ -11,49 +14,84 @@ class QuizQuestionsPage extends StatefulWidget {
 
 class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  int currentStatus = 0; // Track the current status
 
-  // Function to fetch questions from Firestore
+  @override
+  void initState() {
+    super.initState();
+    fetchCurrentStatus(); // Fetch the initial status when the screen loads
+  }
+
+  // Fetch the current status from Firestore
+  Future<void> fetchCurrentStatus() async {
+    DocumentSnapshot doc =
+    await _firestore.collection('Assigndate').doc(widget.id).get();
+
+    if (doc.exists) {
+      setState(() {
+        currentStatus = doc['status'] ?? 0; // Default to 0 if not found
+      });
+    }
+  }
+
+  // Toggle the status between 0 and 1
+  Future<void> toggleStatus() async {
+    int newStatus = currentStatus == 0 ? 1 : 0;
+
+    await _firestore.collection('Assigndate').doc(widget.id).update({
+      "status": newStatus,
+    });
+
+    setState(() {
+      currentStatus = newStatus; // Update the local state to reflect the change
+    });
+  }
+
+  // Fetch questions from Firestore
   Future<List<Map<String, dynamic>>> fetchQuizQuestions() async {
     QuerySnapshot snapshot = await _firestore
         .collection('quiz_questions')
         .where("dateAdded", isEqualTo: widget.date)
         .get();
-    List<Map<String, dynamic>> questions = snapshot.docs
-        .map((doc) => {
-              'id': doc.id, // Store document ID for update/delete
-              'question': doc['question'],
-              'options': List<String>.from(doc['options']),
-              'correctOption': doc['correctOption'],
-              'dateAdded': doc['dateAdded'],
-            })
-        .toList();
-    return questions;
+
+    return snapshot.docs.map((doc) {
+      return {
+        'id': doc.id,
+        'question': doc['question'],
+        'options': List<String>.from(doc['options']),
+        'correctOption': doc['correctOption'],
+        'dateAdded': doc['dateAdded'],
+      };
+    }).toList();
   }
 
-  // Function to update a question
-  Future<void> updateQuestion(String id, String updatedQuestion,
-      List<String> updatedOptions, int updatedCorrectOption) async {
+  // Update a question in Firestore
+  Future<void> updateQuestion(
+      String id, String question, List<String> options, int correctOption) async {
     await _firestore.collection('quiz_questions').doc(id).update({
-      'question': updatedQuestion,
-      'options': updatedOptions,
-      'correctOption': updatedCorrectOption,
+      'question': question,
+      'options': options,
+      'correctOption': correctOption,
     });
   }
 
-  // Function to delete a question
+  // Delete a question from Firestore
   Future<void> deleteQuestion(String id) async {
     await _firestore.collection('quiz_questions').doc(id).delete();
+    setState(() {}); // Refresh the UI after deleting a question
   }
 
-  // Show an alert dialog for updating a question
-  Future<void> showUpdateDialog(BuildContext context, String id,
-      String question, List<String> options, int correctOption) async {
+  // Show a dialog to edit a question
+  Future<void> showUpdateDialog(BuildContext context, String id, String question,
+      List<String> options, int correctOption) async {
     TextEditingController questionController =
-        TextEditingController(text: question);
+    TextEditingController(text: question);
     List<TextEditingController> optionControllers = List.generate(
-        options.length, (index) => TextEditingController(text: options[index]));
+      options.length,
+          (index) => TextEditingController(text: options[index]),
+    );
     TextEditingController correctOptionController =
-        TextEditingController(text: correctOption.toString());
+    TextEditingController(text: correctOption.toString());
 
     showDialog(
       context: context,
@@ -71,14 +109,12 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
                 ...List.generate(optionControllers.length, (index) {
                   return TextField(
                     controller: optionControllers[index],
-                    decoration:
-                        InputDecoration(labelText: 'Option ${index + 1}'),
+                    decoration: InputDecoration(labelText: 'Option ${index + 1}'),
                   );
                 }),
                 TextField(
                   controller: correctOptionController,
-                  decoration:
-                      InputDecoration(labelText: 'Correct Option Index'),
+                  decoration: InputDecoration(labelText: 'Correct Option Index'),
                   keyboardType: TextInputType.number,
                 ),
               ],
@@ -87,29 +123,28 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context); // Close the dialog
               },
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: Colors.blue.shade900),
-              ),
+              child: Text('Cancel', style: TextStyle(color: Colors.blue)),
             ),
             TextButton(
               onPressed: () {
-                List<String> updatedOptions = optionControllers
-                    .map((controller) => controller.text)
-                    .toList();
+                List<String> updatedOptions =
+                optionControllers.map((c) => c.text).toList();
                 int updatedCorrectOption =
-                    int.parse(correctOptionController.text);
-                updateQuestion(id, questionController.text, updatedOptions,
-                    updatedCorrectOption);
-                Navigator.pop(context);
+                int.parse(correctOptionController.text);
+
+                updateQuestion(
+                  id,
+                  questionController.text,
+                  updatedOptions,
+                  updatedCorrectOption,
+                );
+
+                Navigator.pop(context); // Close the dialog
                 setState(() {}); // Refresh the UI after update
               },
-              child: Text(
-                'Save',
-                style: TextStyle(color: Colors.blue.shade900),
-              ),
+              child: Text('Save', style: TextStyle(color: Colors.green)),
             ),
           ],
         );
@@ -125,34 +160,31 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
         backgroundColor: Colors.blue.shade100,
         title: Text('Quiz Questions'),
         actions: [
-          InkWell(onTap: () {
-            FirebaseFirestore.instance.collection("Assigndate").doc("Eh01GrnL0JW6bk28Edlr").update({
-              "status":1
-            });
-          },
-              child: Container(
-                color: Colors.green,
-            height: 50,
-            width: 200,
-            child: Center(child: Text("Publish")),
-          ))
+          InkWell(
+            onTap: toggleStatus, // Toggle status on tap
+            child: Container(
+              color: currentStatus == 0 ? Colors.green : Colors.red,
+              height: 50,
+              width: 200,
+              child: Center(
+                child: Text(
+                  currentStatus == 0 ? "Tap to publish" : "Unpublish",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: fetchQuizQuestions(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
+            return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-              child: Text('No questions found'),
-            );
+            return Center(child: Text('No questions found'));
           } else {
             List<Map<String, dynamic>> questions = snapshot.data!;
             return ListView.builder(
@@ -175,18 +207,14 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text(
-                          'Options:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        Text('Options:', style: TextStyle(fontWeight: FontWeight.bold)),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: List.generate(
                             question['options'].length,
-                            (i) => Padding(
+                                (i) => Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4),
-                              child:
-                                  Text('${i + 1}. ${question['options'][i]}'),
+                              child: Text('${i + 1}. ${question['options'][i]}'),
                             ),
                           ),
                         ),
@@ -219,39 +247,9 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
                             IconButton(
                               icon: Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
-                                // Show a confirmation dialog before deleting
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      backgroundColor: Colors.blue.shade50,
-                                      title: Text('Delete'),
-                                      content: Text(
-                                          'Are you sure you want to delete this Question?'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(
-                                                context); // Close the dialog
-                                          },
-                                          child: Text('Cancel'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            deleteQuestion(question['id']);
-                                            Navigator.pop(
-                                                context); // Close the dialog
-                                          },
-                                          child: Text('Delete',
-                                              style:
-                                                  TextStyle(color: Colors.red)),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
+                                deleteQuestion(question['id']);
                               },
-                            )
+                            ),
                           ],
                         ),
                       ],

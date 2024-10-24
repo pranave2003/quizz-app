@@ -18,13 +18,14 @@ class _AptitudePageState extends State<AptitudePage> {
         .delete();
   }
 
-  // Function to count the number of questions for a specific date
-  Future<int> countQuestionsByDate(String date) async {
-    QuerySnapshot questionSnapshot = await FirebaseFirestore.instance
+  // Stream that provides a list of quiz questions for a specific date
+  Stream<int> getQuestionCountStream(String date) {
+    return FirebaseFirestore.instance
         .collection('quiz_questions')
         .where('dateAdded', isEqualTo: date)
-        .get();
-    return questionSnapshot.size; // Returns the number of questions
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.size); // Map the snapshot to the question count
   }
 
   @override
@@ -49,24 +50,18 @@ class _AptitudePageState extends State<AptitudePage> {
           }
 
           var quizzes = quizSnapshot.data!.docs;
-          Set<String> uniqueDates = {}; // Store unique dates
 
           return ListView.builder(
             itemCount: quizzes.length,
             itemBuilder: (context, index) {
               var quiz = quizzes[index];
               var assignedDate = quiz["Assigneddate"];
+              var status = quiz["status"];
               var docId = quiz.id; // Get the document ID for deleting
 
-              // Skip if the date is already encountered
-              if (uniqueDates.contains(assignedDate)) {
-                return SizedBox.shrink(); // Skip rendering this item
-              }
-              // Add the date to the set, ensuring it won't appear again
-              uniqueDates.add(assignedDate);
-
-              return FutureBuilder<int>(
-                future: countQuestionsByDate(assignedDate), // Fetch question count
+              return StreamBuilder<int>(
+                stream: getQuestionCountStream(
+                    assignedDate), // Stream for question count
                 builder: (context, countSnapshot) {
                   if (!countSnapshot.hasData) {
                     return ListTile(
@@ -79,8 +74,36 @@ class _AptitudePageState extends State<AptitudePage> {
 
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Card(color: Colors.white,
+                    child: Card(
+                      color: Colors.white,
                       child: ListTile(
+                        leading: status == 1
+                            ? Container(
+                                width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.green),
+                                child: Center(
+                                    child: Text(
+                                  "Published",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                )))
+                            : Container(
+                            width: 100,
+                            height: 40,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.red),
+                            child: Center(
+                                child: Text(
+                                  "Pending",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ))),
                         title: Text(
                           assignedDate,
                           style: TextStyle(
@@ -105,14 +128,17 @@ class _AptitudePageState extends State<AptitudePage> {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.pop(context); // Close the dialog
+                                        Navigator.pop(
+                                            context); // Close the dialog
                                       },
                                       child: Text('Cancel'),
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        deleteAssignedDate(docId); // Delete the date
-                                        Navigator.pop(context); // Close the dialog
+                                        deleteAssignedDate(
+                                            docId); // Delete the date
+                                        Navigator.pop(
+                                            context); // Close the dialog
                                       },
                                       child: Text('Delete',
                                           style: TextStyle(color: Colors.red)),
@@ -127,7 +153,8 @@ class _AptitudePageState extends State<AptitudePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) {
-                              return QuizQuestionsPage(date: assignedDate);
+                              return QuizQuestionsPage(
+                                  date: assignedDate, id: docId);
                             }),
                           );
                         },

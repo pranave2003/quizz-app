@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../ViewModel/admin/QuestionProvider.dart';
-import 'add_question_page.dart';
+import 'Navigation/add_question_page.dart';
 
 class AdminPage extends StatefulWidget {
   @override

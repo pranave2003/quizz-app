@@ -18,7 +18,8 @@ class QuestionProvider with ChangeNotifier {
     }
   }
 
-  Future<void> saveQuestion(String questionText, List<String> options, int correctOption, String dateAdded) async {
+  Future<void> saveQuestion(String questionText, List<String> options,
+      int correctOption, String dateAdded) async {
     _questions.add({
       'question': questionText,
       'options': options,
@@ -31,22 +32,21 @@ class QuestionProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
-
-
   Future<void> submitQuestionsToFirebase({String? selecteddata}) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Assuming your Firestore structure, you can modify it according to your needs
     for (var question in _questions) {
       await firestore.collection('quiz_questions').add(question);
+     await FirebaseFirestore.instance
+          .collection("Assigndate")
+          .add({"Assigneddate": selecteddata, "status": 1});
     }
 
     // Clear SharedPreferences after submission
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('questions');
 
-    FirebaseFirestore.instance.collection("Assigndate").add({"Assigneddate":selecteddata});
 
     _questions.clear(); // Clear the local list
     notifyListeners();

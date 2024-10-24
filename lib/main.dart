@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'View/admin/Admindashboard.dart';
+import 'View/admin/Adminloginweb.dart';
 import 'ViewModel/admin/QuestionProvider.dart';
 import 'View/admin/admin_page.dart';
 
@@ -51,7 +53,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Gauth(),
+        home: DashboardScreen(),
       ),
     );
   }

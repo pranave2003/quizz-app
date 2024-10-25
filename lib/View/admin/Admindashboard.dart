@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -95,14 +96,48 @@ class NavigationPanel extends StatelessWidget {
             isSelected: currentIndex == 3, // Check if this button is selected
             onTap: () => onTap(3), // Call onTap with index 3
           ),
+          Spacer(),
           NavButton(
             icon: Icons.exit_to_app,
             label: 'Logout',
             isSelected: currentIndex == 4, // Check if this button is selected
             onTap: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder:  (context) {
-                return AdminLoginweb();
-              },));
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    backgroundColor: Colors.white,
+                    title: Text('Logout'),
+                    content: Text(
+                        'Are you sure you want to logout'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(
+                              context); // Close the dialog
+                        },
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                            final FirebaseAuth auth = FirebaseAuth.instance; // Initialize Firebase Auth
+                            await auth.signOut();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AdminLoginweb(), // Redirect to login page
+                              ),
+                            );
+
+                        },
+                        child: Text('Logout',
+                            style: TextStyle(color: Colors.red)),
+                      ),
+                    ],
+                  );
+                },
+              );
+
             }, // Call onTap with index 4
           ),
         ],

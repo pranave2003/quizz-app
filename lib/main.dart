@@ -23,13 +23,13 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-
         ChangeNotifierProvider<Auth>(
           create: (_) => Auth(),
         ),
         ChangeNotifierProvider<QuestionProvider>(
           create: (context) => QuestionProvider(),
-        ), ChangeNotifierProvider<UserProvider>(
+        ),
+        ChangeNotifierProvider<UserProvider>(
           create: (context) => UserProvider(),
         ),
 
@@ -53,9 +53,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: DashboardScreen(),
+        home: Gauth(),
       ),
     );
   }
 }
-

@@ -35,7 +35,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
             });
           },
         )
-            : Text('Student List'),
+            : Text('Student List',style: TextStyle(fontWeight: FontWeight.bold),),
         backgroundColor: Colors.blue.shade100,
         actions: [
           // Trade Dropdown

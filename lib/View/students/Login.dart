@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:social_login_buttons/social_login_buttons.dart';
 
@@ -13,7 +15,6 @@ class Login extends StatefulWidget {
   @override
   State<Login> createState() => _LoginState();
 }
-
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
@@ -68,13 +69,10 @@ class _LoginState extends State<Login> {
                   Container(
                     height: 100.h,
                     width: 100.w,
-                    color: Colors.grey.shade300,
-                    child: const Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Colors.white,
-                    ),
+
+                    child: Lottie.asset("assets/Animation - 1729684673816.json")
                   ),
+                  Text("IQ",style: GoogleFonts.abrilFatface(fontSize: 40),),
                   SizedBox(height: 50.h),
 
                   // Email Field
@@ -130,7 +128,10 @@ class _LoginState extends State<Login> {
                       if (_formKey.currentState!.validate()) {
                         // Proceed with login logic
                         Provider.of<Auth>(context, listen: false)
-                            .loginWithCredentials(context, _emailController.text, _passwordController.text);
+                            .loginWithCredentials(
+                                context,
+                                _emailController.text,
+                                _passwordController.text);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Logging in...')),
                         );
@@ -181,18 +182,18 @@ class _LoginState extends State<Login> {
                       ),
                     ],
                   ),
-                  const Divider(),
+
 
                   // Social Login Button (e.g., Google)
-                  SocialLoginButton(
-                    backgroundColor: Colors.blue.shade50,
-                    buttonType: SocialLoginButtonType.google,
-                    onPressed: () {
-                      Provider.of<Auth>(context, listen: false)
-                          .signInWithGoogle(context);
-                      // Implement Google login functionality
-                    },
-                  ),
+                  // SocialLoginButton(
+                  //     backgroundColor: Colors.blue.shade50,
+                  //     buttonType: SocialLoginButtonType.google,
+                  //     onPressed: () {
+                  //         Provider.of<Auth>(context, listen: false)
+                  //             .signInWithGoogle(context);
+                  //         // Implement Google login functionality
+                  //
+                  //     }),
                   SizedBox(height: 50.h),
                 ],
               ),

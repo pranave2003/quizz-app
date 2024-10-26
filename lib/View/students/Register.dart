@@ -250,20 +250,20 @@ class _RegisterState extends State<Register> {
                       ),
                     ],
                   ),
-                  const Divider(),
+
 
                   // Social Login Button (e.g., Google)
-                  SocialLoginButton(
-                    backgroundColor: Colors.blue.shade50,
-                    buttonType: SocialLoginButtonType.google,
-                    onPressed: () {
-                      Provider.of<Auth>(context, listen: false)
-                          .signInWithGoogle(context);
-
-                      // Alternatively:
-                      // context.read<Auth>().signInWithGoogle(context);
-                    },
-                  ),
+                  // SocialLoginButton(
+                  //   backgroundColor: Colors.blue.shade50,
+                  //   buttonType: SocialLoginButtonType.google,
+                  //   onPressed: () {
+                  //     Provider.of<Auth>(context, listen: false)
+                  //         .signInWithGoogle(context);
+                  //
+                  //     // Alternatively:
+                  //     // context.read<Auth>().signInWithGoogle(context);
+                  //   },
+                  // ),
                   SizedBox(height: 50.h),
                 ],
               ),

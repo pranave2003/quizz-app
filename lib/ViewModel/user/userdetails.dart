@@ -7,11 +7,11 @@ class UserProvider extends ChangeNotifier {
 
 
   UserProvider() {
-    _loadUserId();
+    loadUserId();
   }
 
   // Function to load the user ID from SharedPreferences
-  Future<void> _loadUserId() async {
+  Future<void> loadUserId() async {
     print("Load user data from UserProvider");
     SharedPreferences data = await SharedPreferences.getInstance();
     userId = data.getString('userId') ?? '';

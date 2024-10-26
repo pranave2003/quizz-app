@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'Homescreen.dart';
 import 'Login.dart';
+import 'Navigationbar.dart';
 
 class Gauth extends StatefulWidget {
   const Gauth({super.key});
@@ -21,7 +22,7 @@ class _GauthState extends State<Gauth> {
           builder: (context, snapshot) {
             //user is logged in
             if (snapshot.hasData) {
-              return const StudentHome();
+              return  CustomBottomNavigationBar();
             }
             //user is notlogged in
             else {

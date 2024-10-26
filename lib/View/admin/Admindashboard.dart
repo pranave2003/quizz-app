@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:quizzapp/View/admin/Navigation/Result/Redult_sheduledate.dart';
 
 import 'Adminloginweb.dart';
+import 'Navigation/Admin_Notification.dart';
 import 'Navigation/Aptitude/shedule_page.dart';
 import 'Navigation/Addshedule/Aptitude_Scheduler.dart';
 import 'Navigation/mystudents.dart';
@@ -23,7 +24,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     AptitudePage(),
     Sheadulequastion(),
     StudentResultScreen(),
-    MyProfileScreen(),
+    AdminNotificationScreen()
   ];
 
   @override
@@ -96,11 +97,18 @@ class NavigationPanel extends StatelessWidget {
             isSelected: currentIndex == 3, // Check if this button is selected
             onTap: () => onTap(3), // Call onTap with index 3
           ),
+
+          NavButton(
+            icon: Icons.message,
+            label: 'Notification',
+            isSelected: currentIndex == 4, // Check if this button is selected
+            onTap: () => onTap(4), // Call onTap with index 3
+          ),
           Spacer(),
           NavButton(
             icon: Icons.exit_to_app,
             label: 'Logout',
-            isSelected: currentIndex == 4, // Check if this button is selected
+            isSelected: currentIndex == 5, // Check if this button is selected
             onTap: (){
               showDialog(
                 context: context,

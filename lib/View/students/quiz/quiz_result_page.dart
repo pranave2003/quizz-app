@@ -4,21 +4,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../Homescreen.dart';
+import '../Navigationbar.dart';
 
 class QuizPage extends StatefulWidget {
   final String assignedDate;
-  final String Userid;
+  final String userId;
   final String location;
   final String trade;
   final String email;
   final String image;
+  final String name;
   QuizPage(
       {required this.assignedDate,
-      required this.Userid,
+      required this.userId,
       required this.location,
       required this.trade,
       required this.email,
-      required this.image});
+      required this.image,
+      required this.name});
   @override
   _QuizPageState createState() => _QuizPageState();
 }
@@ -97,15 +100,16 @@ class _QuizPageState extends State<QuizPage> {
               FirebaseFirestore.instance.collection("Submitanswer").add({
                 "Assigneddate": widget.assignedDate,
                 "scrore": _score * 4,
-                "userid": widget.Userid,
+                "userid": widget.userId,
                 "location": widget.location,
                 "trade": widget.trade,
                 "image": widget.image,
-                "email": widget.email
+                "email": widget.email,
+                "name": widget.name
               });
               Navigator.pushReplacement(context, MaterialPageRoute(
                 builder: (context) {
-                  return StudentHome();
+                  return CustomBottomNavigationBar();
                 },
               ));
               // Exit the quiz page

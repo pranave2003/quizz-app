@@ -39,6 +39,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             itemBuilder: (context, index) {
               var data = notifications[index].data() as Map<String, dynamic>;
               return Card(
+                color: Colors.white,
                 child: ListTile(
                   title: Text(
                     data['content'] ?? 'No Content',

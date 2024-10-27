@@ -37,7 +37,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             currentIndex: currentIndex, // Pass currentIndex to NavigationPanel
             onTap: (int index) {
               setState(() {
-                currentIndex = index; // Update the current index when a button is pressed
+                currentIndex =
+                    index; // Update the current index when a button is pressed
               });
             },
           ),
@@ -45,7 +46,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Expanded(
             child: IndexedStack(
               index: currentIndex, // Show content based on the selected index
-              children: _pages,    // List of pages that will be switched
+              children: _pages, // List of pages that will be switched
             ),
           ),
         ],
@@ -55,7 +56,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 }
 
 class NavigationPanel extends StatelessWidget {
-  final ValueChanged<int> onTap; // Function to handle button taps and send index
+  final ValueChanged<int>
+      onTap; // Function to handle button taps and send index
   final int currentIndex; // To track which button is selected
 
   NavigationPanel({required this.onTap, required this.currentIndex});
@@ -70,7 +72,8 @@ class NavigationPanel extends StatelessWidget {
           DrawerHeader(
             child: Text(
               'IQ',
-              style: GoogleFonts.abrilFatface(fontSize: 40,color: Colors.white),
+              style:
+                  GoogleFonts.abrilFatface(fontSize: 40, color: Colors.white),
             ),
           ),
           NavButton(
@@ -97,7 +100,6 @@ class NavigationPanel extends StatelessWidget {
             isSelected: currentIndex == 3, // Check if this button is selected
             onTap: () => onTap(3), // Call onTap with index 3
           ),
-
           NavButton(
             icon: Icons.message,
             label: 'Notification',
@@ -109,43 +111,41 @@ class NavigationPanel extends StatelessWidget {
             icon: Icons.exit_to_app,
             label: 'Logout',
             isSelected: currentIndex == 5, // Check if this button is selected
-            onTap: (){
+            onTap: () {
               showDialog(
                 context: context,
                 builder: (context) {
                   return AlertDialog(
                     backgroundColor: Colors.white,
                     title: Text('Logout'),
-                    content: Text(
-                        'Are you sure you want to logout'),
+                    content: Text('Are you sure you want to logout'),
                     actions: [
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(
-                              context); // Close the dialog
+                          Navigator.pop(context); // Close the dialog
                         },
                         child: Text('Cancel'),
                       ),
                       TextButton(
                         onPressed: () async {
-                            final FirebaseAuth auth = FirebaseAuth.instance; // Initialize Firebase Auth
-                            await auth.signOut();
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const AdminLoginweb(), // Redirect to login page
-                              ),
-                            );
-
+                          final FirebaseAuth auth =
+                              FirebaseAuth.instance; // Initialize Firebase Auth
+                          await auth.signOut();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const AdminLoginweb(), // Redirect to login page
+                            ),
+                          );
                         },
-                        child: Text('Logout',
-                            style: TextStyle(color: Colors.red)),
+                        child:
+                            Text('Logout', style: TextStyle(color: Colors.red)),
                       ),
                     ],
                   );
                 },
               );
-
             }, // Call onTap with index 4
           ),
         ],
@@ -166,36 +166,26 @@ class NavButton extends StatelessWidget {
     required this.onTap,
     required this.isSelected, // Add isSelected parameter
   });
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        color: isSelected ? Colors.blue : Colors.transparent, // Change color if selected
+        color: isSelected
+            ? Colors.blue
+            : Colors.transparent, // Change color if selected
         child: ListTile(
           leading: Icon(icon, color: isSelected ? Colors.white : Colors.white),
           title: Text(
             label,
             style: TextStyle(
               fontSize: 16,
-              color: isSelected ? Colors.white : Colors.white, // Change text color if selected
+              color: isSelected
+                  ? Colors.white
+                  : Colors.white, // Change text color if selected
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-// Screen 5: My Profile
-class MyProfileScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "This is the My Profile screen",
-        style: TextStyle(fontSize: 24),
       ),
     );
   }

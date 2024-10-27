@@ -229,6 +229,8 @@ class Auth extends ChangeNotifier {
         "userId": _user!.uid,
         "Trade": selectedTrade,
         "OfficeLocation": selectedLocation,
+        "Linkdin": "",
+        "github": ""
       });
 
       Navigator.pushReplacement(
@@ -280,9 +282,9 @@ class Auth extends ChangeNotifier {
     prefs.setString('userId', userId);
     prefs.setString('email', email);
     prefs.setString('loginMethod', 'Credentials');
-    Provider.of<UserProvider>(context,listen: false).loadUserId();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => CustomBottomNavigationBar()));
+    Provider.of<UserProvider>(context, listen: false).loadUserId();
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => CustomBottomNavigationBar()));
   }
 
   Future<void> signOut(BuildContext context) async {

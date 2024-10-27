@@ -8,13 +8,25 @@ class StudentListScreen extends StatefulWidget {
 }
 
 class _StudentListScreenState extends State<StudentListScreen> {
-  final List<String> trades = ['All', 'FLUTTER', 'MERN', 'PYTHON', 'DIGITAL_MARKET'];
-  final List<String> locations = ['All', 'KOZHIKODE', 'PERINTHALMANNA', 'PALAKKAD', 'KOCHI'];
+  final List<String> trades = [
+    'All',
+    'FLUTTER',
+    'MERN',
+    'PYTHON',
+    'DIGITAL_MARKET'
+  ];
+  final List<String> locations = [
+    'All',
+    'KOZHIKODE',
+    'PERINTHALMANNA',
+    'PALAKKAD',
+    'KOCHI'
+  ];
 
   String? selectedTrade = 'All';
   String? selectedLocation = 'All';
   String searchText = '';
-  bool isSearching = false; // This will control the search mode
+  bool isSearching = false;
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -24,21 +36,23 @@ class _StudentListScreenState extends State<StudentListScreen> {
       appBar: AppBar(
         title: isSearching
             ? TextField(
-          controller: searchController,
-          decoration: InputDecoration(
-            hintText: 'Search by name...',
-            border: InputBorder.none,
-          ),
-          onChanged: (value) {
-            setState(() {
-              searchText = value.toLowerCase(); // Make the search case-insensitive
-            });
-          },
-        )
-            : Text('Student List',style: TextStyle(fontWeight: FontWeight.bold),),
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search by name...',
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    searchText = value.toLowerCase();
+                  });
+                },
+              )
+            : Text(
+                'Student List',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
         backgroundColor: Colors.blue.shade100,
         actions: [
-          // Trade Dropdown
           DropdownButton<String>(
             value: selectedTrade,
             hint: Text('Select Trade'),
@@ -55,7 +69,6 @@ class _StudentListScreenState extends State<StudentListScreen> {
             }).toList(),
           ),
           SizedBox(width: 20),
-          // Location Dropdown
           DropdownButton<String>(
             value: selectedLocation,
             hint: Text('Select Location'),
@@ -72,35 +85,37 @@ class _StudentListScreenState extends State<StudentListScreen> {
             }).toList(),
           ),
           SizedBox(width: 20),
-          // Search Icon
           IconButton(
             icon: Icon(isSearching ? Icons.cancel : Icons.search),
             onPressed: () {
               setState(() {
                 if (isSearching) {
                   searchController.clear();
-                  searchText = ''; // Clear search when cancel is pressed
+                  searchText = '';
                 }
-                isSearching = !isSearching; // Toggle search mode
+                isSearching = !isSearching;
               });
             },
           ),
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('Softstudents').snapshots(),
+        stream:
+            FirebaseFirestore.instance.collection('Softstudents').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
 
-          // Filter students based on selected trade, location, and search text
           List<MyStudents> students = snapshot.data!.docs
               .map((doc) => MyStudents.fromDocumentSnapshot(doc))
               .where((student) {
-            bool matchesTrade = selectedTrade == 'All' || student.trade == selectedTrade;
-            bool matchesLocation = selectedLocation == 'All' || student.officeLocation == selectedLocation;
-            bool matchesSearch = searchText.isEmpty || student.name.toLowerCase().contains(searchText);
+            bool matchesTrade =
+                selectedTrade == 'All' || student.trade == selectedTrade;
+            bool matchesLocation = selectedLocation == 'All' ||
+                student.officeLocation == selectedLocation;
+            bool matchesSearch = searchText.isEmpty ||
+                student.name.toLowerCase().contains(searchText);
             return matchesTrade && matchesLocation && matchesSearch;
           }).toList();
 
@@ -108,20 +123,58 @@ class _StudentListScreenState extends State<StudentListScreen> {
             itemCount: students.length,
             itemBuilder: (context, index) {
               MyStudents student = students[index];
-              return StudentCard(student: student, index: index); // Pass index to StudentCard
+              return StudentCard(
+                student: student,
+                index: index,
+                onDelete: () async {
+                  await _confirmDelete(context, student);
+                },
+              );
             },
           );
         },
       ),
     );
   }
+
+  Future<void> _confirmDelete(BuildContext context, MyStudents student) async {
+    bool confirmDelete = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Delete'),
+        content: Text('Are you sure you want to delete ${student.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Confirm'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmDelete) {
+      FirebaseFirestore.instance
+          .collection('Softstudents')
+          .doc(student.userId) // assuming each student has a unique ID
+          .delete();
+    }
+  }
 }
 
 class StudentCard extends StatelessWidget {
   final MyStudents student;
   final int index;
+  final VoidCallback onDelete;
 
-  StudentCard({required this.student, required this.index});
+  StudentCard({
+    required this.student,
+    required this.index,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -133,8 +186,10 @@ class StudentCard extends StatelessWidget {
         leading: CircleAvatar(
           backgroundImage: NetworkImage(student.imageUrl),
         ),
-        title: Text('${index + 1}. ${student.name}',  // Display index + 1 before name
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        title: Text(
+          '${index + 1}. ${student.name}',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -142,6 +197,10 @@ class StudentCard extends StatelessWidget {
             Text('Trade: ${student.trade}'),
             Text('Office Location: ${student.officeLocation}'),
           ],
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.delete, color: Colors.red),
+          onPressed: onDelete,
         ),
       ),
     );

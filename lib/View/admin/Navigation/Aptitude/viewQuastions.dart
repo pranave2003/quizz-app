@@ -103,6 +103,7 @@ class _QuizQuestionsPageState extends State<QuizQuestionsPage> {
             child: Column(
               children: [
                 TextField(
+                  maxLines: 5,
                   controller: questionController,
                   decoration: InputDecoration(labelText: 'Question'),
                 ),

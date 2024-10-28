@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../Model/admin/navigation/mystudentsmodel.dart';
 
 class StudentListScreen extends StatefulWidget {
@@ -196,6 +197,63 @@ class StudentCard extends StatelessWidget {
             Text('Email: ${student.email}'),
             Text('Trade: ${student.trade}'),
             Text('Office Location: ${student.officeLocation}'),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 10,
+                  backgroundColor: Colors.white,
+                  backgroundImage: AssetImage("assets/img.png"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    if (student.Linkedin == '') {
+                      print("null data please add");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("didn't Added")),
+                      );
+                    } else {
+                      final uri = Uri.parse(student.Linkedin);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri,
+                            mode: LaunchMode.externalApplication);
+                      } else {
+                        throw 'Could not launch';
+                      }
+                    }
+                  },
+                  child: Text("Open LinkedIn"),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 10,
+                  backgroundColor: Colors.white,
+                  backgroundImage: AssetImage("assets/img_1.png"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    if (student.Github == "") {
+                      print("null data please add");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("didn't Added")),
+                      );
+                    } else {
+                      final uri = Uri.parse(student.Github);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri,
+                            mode: LaunchMode.externalApplication);
+                      } else {
+                        throw 'Could not launch';
+                      }
+                    }
+                  },
+                  child: Text("Open GitHub"),
+                ),
+              ],
+            ),
           ],
         ),
         trailing: IconButton(

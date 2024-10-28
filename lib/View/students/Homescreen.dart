@@ -57,7 +57,7 @@ class _StudentHomeState extends State<StudentHome> {
                             width: 20,
                           ),
                           Container(
-                            height: 150.h,
+                            height: 200.h,
                             width: 300.w,
                             decoration: BoxDecoration(
                                 color: Colors.blue.shade50,
@@ -290,7 +290,8 @@ class _StudentHomeState extends State<StudentHome> {
                                             children: [
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.spaceEvenly,
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
                                                 children: [
                                                   Container(
                                                     height: 50,
@@ -301,8 +302,8 @@ class _StudentHomeState extends State<StudentHome> {
                                                                 .green.shade900
                                                             : Colors.red,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                10)),
+                                                            BorderRadius
+                                                                .circular(10)),
                                                     child: Center(
                                                       child: attended
                                                           ? Text(
@@ -324,16 +325,19 @@ class _StudentHomeState extends State<StudentHome> {
                                                   SizedBox(width: 100),
                                                   Padding(
                                                     padding:
-                                                        const EdgeInsets.all(8.0),
+                                                        const EdgeInsets.all(
+                                                            8.0),
                                                     child:
                                                         CircularPercentIndicator(
                                                       radius: 40.0,
                                                       lineWidth: 5.0,
                                                       percent: progress,
-                                                      center: Text("$score/100"),
+                                                      center:
+                                                          Text("$score/100"),
                                                       progressColor: attended
                                                           ? Colors.green
-                                                          : Colors.grey.shade900,
+                                                          : Colors
+                                                              .grey.shade900,
                                                     ),
                                                   ),
                                                 ],
@@ -345,7 +349,8 @@ class _StudentHomeState extends State<StudentHome> {
                                                 children: [
                                                   Padding(
                                                     padding:
-                                                        const EdgeInsets.all(8.0),
+                                                        const EdgeInsets.all(
+                                                            8.0),
                                                     child: Row(
                                                       children: [
                                                         Text(

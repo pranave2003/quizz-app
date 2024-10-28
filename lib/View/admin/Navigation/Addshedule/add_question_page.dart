@@ -48,7 +48,7 @@ class _Createaptitude_subState extends State<Createaptitude_sub> {
                 ],
               ),
               // Question text field
-              TextFormField(
+              TextFormField(maxLines: 5,
                 decoration: InputDecoration(labelText: 'Question'),
                 onChanged: (val) => questionText = val,
                 validator: (value) {

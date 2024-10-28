@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -97,11 +98,18 @@ class _SheadulequastionState extends State<Sheadulequastion> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     SizedBox(width: 10),
-                                    Text(
-                                      question['question'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
+                                    Card(
+                                      child: SizedBox(width: 500,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            question['question'],
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),

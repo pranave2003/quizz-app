@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../Homescreen.dart';
 import '../Navigationbar.dart';
 
 class QuizPage extends StatefulWidget {
@@ -184,21 +183,26 @@ class _QuizPageState extends State<QuizPage> {
                       ? null
                       : () => _submitAnswer(
                           optionIndex), // Disable tap after answer
-                  child: Container(
-                    width: 1.sw,
-                    margin: EdgeInsets.only(bottom: 10),
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: _selectedIndex == optionIndex
-                          ? (_selectedIndex == correctOption
-                              ? Colors.green
-                              : Colors.red)
-                          : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      options[optionIndex],
-                      style: TextStyle(fontSize: 16),
+                  child: Center(
+                    child: Container(
+                      width: 250.w,
+                      margin: EdgeInsets.only(bottom: 10),
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: _selectedIndex == optionIndex
+                            ? (_selectedIndex == correctOption
+                                ? Colors.green
+                                : Colors.red)
+                            : (_isAnswered && optionIndex == correctOption
+                                ? Colors.green
+                                    .shade900 // Show correct answer in orange after answering incorrectly
+                                : Colors.grey[200]), // Default color
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        options[optionIndex],
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
                 );

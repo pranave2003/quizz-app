@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:quizzapp/ViewModel/user/userdetails.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../View/students/Homescreen.dart';
-
 import '../../View/students/Login.dart';
 import '../../View/students/Navigationbar.dart';
 import '../../View/students/gauthgate.dart';

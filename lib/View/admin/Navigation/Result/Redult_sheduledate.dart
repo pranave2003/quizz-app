@@ -46,7 +46,7 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
         .where("status", isEqualTo: 1)
         .get();
     List<String> dates =
-    snapshot.docs.map((doc) => doc['Assigneddate'].toString()).toList();
+        snapshot.docs.map((doc) => doc['Assigneddate'].toString()).toList();
     setState(() {
       assignedDates.addAll(dates);
     });
@@ -69,6 +69,7 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue.shade50,
@@ -78,7 +79,7 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
       ),
       body: Column(
         children: [
-          // Search TextField
+          // Search TextField and Dropdowns (remains unchanged)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -103,6 +104,7 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
                   ),
                 ),
               ),
+              // Dropdowns (remains unchanged)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -183,14 +185,14 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
               stream: FirebaseFirestore.instance
                   .collection('Submitanswer')
                   .where('Assigneddate',
-                  isEqualTo: selectedAssignedDate != 'All'
-                      ? selectedAssignedDate
-                      : null)
+                      isEqualTo: selectedAssignedDate != 'All'
+                          ? selectedAssignedDate
+                          : null)
                   .where('trade',
-                  isEqualTo: selectedTrade != 'All' ? selectedTrade : null)
+                      isEqualTo: selectedTrade != 'All' ? selectedTrade : null)
                   .where('location',
-                  isEqualTo:
-                  selectedLocation != 'All' ? selectedLocation : null)
+                      isEqualTo:
+                          selectedLocation != 'All' ? selectedLocation : null)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -214,76 +216,101 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
                   return Center(child: Text('No results found.'));
                 }
 
-                return ListView.builder(
-                  itemCount: docs.length,
-                  itemBuilder: (context, index) {
-                    var data = docs[index].data() as Map<String, dynamic>;
-                    var docId = docs[index].id;
-                    int score=int.parse("${data['scrore']}");
-                    return Card(
-                      color: Colors.white,
-                      child: ListTile(
-                        title: Text("name: ${data['name']}"),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Location: ${data['location']}"),
-                            Text("Trade: ${data['trade']}"),
-                            Text("Score: ${data['scrore']}"),
-                            Text("Email: ${data['email']}"),
+                return SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: DataTable(
+                    columns: const [
+                      DataColumn(label: Text("No",style: TextStyle(fontWeight: FontWeight.bold),)), // New Index Column
+                      DataColumn(label: Text("Name",style: TextStyle(fontWeight: FontWeight.bold),)),
+                      DataColumn(label: Text("Location",style: TextStyle(fontWeight: FontWeight.bold),)),
+                      DataColumn(label: Text("Trade",style: TextStyle(fontWeight: FontWeight.bold),)),
+                      DataColumn(label: Text("Score",style: TextStyle(fontWeight: FontWeight.bold),)),
+                      DataColumn(label: Text("Performance",style: TextStyle(fontWeight: FontWeight.bold),)),
+                      DataColumn(label: Text("Date",style: TextStyle(fontWeight: FontWeight.bold),)),
+                      DataColumn(label: Text("Actions",style: TextStyle(fontWeight: FontWeight.bold),)),
+                    ],
+                    rows: List<DataRow>.generate(docs.length, (index) {
+                      var data = docs[index].data() as Map<String, dynamic>;
+                      var docId = docs[index].id;
+                      int score = int.parse("${data['scrore']}");
+                      String performance = score == 0
+                          ? "Weak Performance"
+                          : score <= 30
+                              ? "Need Improve"
+                              : score <= 70
+                                  ? "Average "
+                                  : "Good Performance 🥳";
 
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                score == 0
-                                    ? Text(
-                                  "Week Perfomance 😡",
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold),
-                                )
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                              Text((index + 1).toString())), // Display index
+                          DataCell(Text(data['name'] ?? '')),
+                          DataCell(Text(data['location'] ?? '')),
+                          DataCell(Text(data['trade'] ?? '')),
+                          DataCell(Text(data['scrore'].toString())),
+                          DataCell(
+                            Text(
+                              performance,
+                              style: TextStyle(
+                                color: score == 0
+                                    ? Colors.red
                                     : score <= 30
-                                    ? Text(
-                                  "Need Improve",
-                                  style: TextStyle(
-                                      color: Colors.amber.shade900,
-                                      fontWeight: FontWeight.bold),
-                                )
-                                    : score <= 70
-                                    ? Text(
-                                  "Average Performance",
-                                  style: TextStyle(
-                                      color:
-                                      Colors.green.shade900),
-                                )
-                                    : Text(
-                                  "Good Performance 🥳",
-                                  style: TextStyle(
-                                      color:
-                                      Colors.green.shade900,
-                                      fontWeight:
-                                      FontWeight.bold),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                        leading: data['image'] != null
-                            ? Image.network(data['image'])
-                            : Icon(Icons.person),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => deleteResult(docId),
-                        ),
-                      ),
-                    );
-                  },
+                                        ? Colors.amber.shade900
+                                        : score <= 70
+                                            ? Colors.blueGrey
+                                            : Colors.green.shade900,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          DataCell(Text(data["Assigneddate"])),
+                          DataCell(
+                            IconButton(
+                                icon: Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        backgroundColor: Colors.blue.shade50,
+                                        title: Text('Delete'),
+                                        content: Text(
+                                            'Are you sure you want to delete this Rsult?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(
+                                                  context); // Close the dialog
+                                            },
+                                            child: Text('Cancel'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              deleteResult(docId);
+                                            },
+                                            child: Text('Delete',
+                                                style: TextStyle(
+                                                    color: Colors.red)),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }),
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
                 );
               },
             ),
-          ),
+          )
         ],
       ),
     );
   }
 }
+
+var mycolor=Colors.black87;

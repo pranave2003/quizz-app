@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:quizzapp/View/admin/Adminauth.dart';
-import 'package:quizzapp/View/students/Login.dart';
 import 'package:quizzapp/View/students/gauthgate.dart';
-import 'View/students/Navigationbar.dart';
+import 'Tst.dart';
 import 'ViewModel/admin/QuestionProvider.dart';
-
 import 'ViewModel/user/Auth.dart';
-
 import 'package:firebase_core/firebase_core.dart';
-
 import 'ViewModel/user/userdetails.dart';
 import 'firebase_options.dart';
 
@@ -52,7 +48,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Gauth(),
+        home: AdminAuth(),
       ),
     );
   }

@@ -120,18 +120,146 @@ class _StudentListScreenState extends State<StudentListScreen> {
             return matchesTrade && matchesLocation && matchesSearch;
           }).toList();
 
-          return ListView.builder(
-            itemCount: students.length,
-            itemBuilder: (context, index) {
-              MyStudents student = students[index];
-              return StudentCard(
-                student: student,
-                index: index,
-                onDelete: () async {
-                  await _confirmDelete(context, student);
-                },
-              );
-            },
+          if (students.isEmpty) {
+            return Center(child: Text('No students found.'));
+          }
+
+          return SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: [
+                  DataColumn(
+                    label: Text(
+                      'No',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  DataColumn(
+                      label: Text(
+                    'Name',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Email',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Trade',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Office Location',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'LinkedIn',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'GitHub',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Actions',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                ],
+                rows: List<DataRow>.generate(
+                  students.length,
+                  (index) {
+                    final student = students[index];
+                    return DataRow(
+                      cells: [
+                        DataCell(Text((index + 1).toString())),
+                        DataCell(Text(
+                          student.name,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                        DataCell(Text(student.email)),
+                        DataCell(Text(student.trade)),
+                        DataCell(Text(student.officeLocation)),
+                        DataCell(
+                          TextButton(
+                            onPressed: () async {
+                              if (student.Linkedin.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("No LinkedIn profile")),
+                                );
+                              } else {
+                                final uri = Uri.parse(student.Linkedin);
+                                if (await canLaunchUrl(uri)) {
+                                  await launchUrl(uri,
+                                      mode: LaunchMode.externalApplication);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text("Could not launch LinkedIn")),
+                                  );
+                                }
+                              }
+                            },
+                            child: Text(
+                              "Open LinkedIn",
+                              style: TextStyle(
+                                  color: Colors.brown.shade900,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          TextButton(
+                            onPressed: () async {
+                              if (student.Github.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("No GitHub profile")),
+                                );
+                              } else {
+                                final uri = Uri.parse(student.Github);
+                                if (await canLaunchUrl(uri)) {
+                                  await launchUrl(uri,
+                                      mode: LaunchMode.externalApplication);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text("Could not launch GitHub")),
+                                  );
+                                }
+                              }
+                            },
+                            child: Text(
+                              "Open GitHub",
+                              style: TextStyle(
+                                  color: Colors.green.shade900,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              await _confirmDelete(context, student);
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
           );
         },
       ),
@@ -160,107 +288,8 @@ class _StudentListScreenState extends State<StudentListScreen> {
     if (confirmDelete) {
       FirebaseFirestore.instance
           .collection('Softstudents')
-          .doc(student.userId) // assuming each student has a unique ID
+          .doc(student.userId)
           .delete();
     }
-  }
-}
-
-class StudentCard extends StatelessWidget {
-  final MyStudents student;
-  final int index;
-  final VoidCallback onDelete;
-
-  StudentCard({
-    required this.student,
-    required this.index,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      elevation: 4,
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(student.imageUrl),
-        ),
-        title: Text(
-          '${index + 1}. ${student.name}',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Email: ${student.email}'),
-            Text('Trade: ${student.trade}'),
-            Text('Office Location: ${student.officeLocation}'),
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 10,
-                  backgroundColor: Colors.white,
-                  backgroundImage: AssetImage("assets/img.png"),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    if (student.Linkedin == '') {
-                      print("null data please add");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("didn't Added")),
-                      );
-                    } else {
-                      final uri = Uri.parse(student.Linkedin);
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri,
-                            mode: LaunchMode.externalApplication);
-                      } else {
-                        throw 'Could not launch';
-                      }
-                    }
-                  },
-                  child: Text("Open LinkedIn"),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 10,
-                  backgroundColor: Colors.white,
-                  backgroundImage: AssetImage("assets/img_1.png"),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    if (student.Github == "") {
-                      print("null data please add");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("didn't Added")),
-                      );
-                    } else {
-                      final uri = Uri.parse(student.Github);
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri,
-                            mode: LaunchMode.externalApplication);
-                      } else {
-                        throw 'Could not launch';
-                      }
-                    }
-                  },
-                  child: Text("Open GitHub"),
-                ),
-              ],
-            ),
-          ],
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.delete, color: Colors.red),
-          onPressed: onDelete,
-        ),
-      ),
-    );
   }
 }

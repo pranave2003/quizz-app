@@ -92,13 +92,13 @@ class _AptitudePageState extends State<AptitudePage> {
                                       fontWeight: FontWeight.bold),
                                 )))
                             : Container(
-                            width: 100,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.red),
-                            child: Center(
-                                child: Text(
+                                width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.red),
+                                child: Center(
+                                    child: Text(
                                   "Pending",
                                   style: TextStyle(
                                       color: Colors.white,
@@ -117,36 +117,45 @@ class _AptitudePageState extends State<AptitudePage> {
                           icon: Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             // Show a confirmation dialog before deleting
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  backgroundColor: Colors.blue.shade50,
-                                  title: Text('Delete'),
-                                  content: Text(
-                                      'Are you sure you want to delete this date?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(
-                                            context); // Close the dialog
-                                      },
-                                      child: Text('Cancel'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        deleteAssignedDate(
-                                            docId); // Delete the date
-                                        Navigator.pop(
-                                            context); // Close the dialog
-                                      },
-                                      child: Text('Delete',
-                                          style: TextStyle(color: Colors.red)),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            if (questionCount == 0) {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    backgroundColor: Colors.blue.shade50,
+                                    title: Text('Delete'),
+                                    content: Text(
+                                        'Are you sure you want to delete this date?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(
+                                              context); // Close the dialog
+                                        },
+                                        child: Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          deleteAssignedDate(
+                                              docId); // Delete the date
+                                          Navigator.pop(
+                                              context); // Close the dialog
+                                        },
+                                        child: Text('Delete',
+                                            style:
+                                                TextStyle(color: Colors.red)),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        'First you need to delete all quastion in this shedule')),
+                              );
+                            }
                           },
                         ),
                         onTap: () {

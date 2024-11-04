@@ -54,7 +54,13 @@ class _StudentListScreenState extends State<StudentListScreen> {
               ),
         backgroundColor: Colors.blue.shade100,
         actions: [
+          Text(
+            "Choose Trade: ",
+            style: TextStyle(color: Colors.red),
+          ),
           DropdownButton<String>(
+            style: TextStyle(
+                color: Colors.blue.shade900, fontWeight: FontWeight.bold),
             value: selectedTrade,
             hint: Text('Select Trade'),
             onChanged: (value) {
@@ -70,7 +76,10 @@ class _StudentListScreenState extends State<StudentListScreen> {
             }).toList(),
           ),
           SizedBox(width: 20),
+          Text("Choose Location: ", style: TextStyle(color: Colors.red)),
           DropdownButton<String>(
+            style: TextStyle(
+                color: Colors.blue.shade900, fontWeight: FontWeight.bold),
             value: selectedLocation,
             hint: Text('Select Location'),
             onChanged: (value) {

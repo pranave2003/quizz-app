@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Student20/Navigationbar.dart';
 import 'Homescreen.dart';
 import 'Login.dart';
 import 'Navigationbar.dart';
@@ -22,7 +23,7 @@ class _GauthState extends State<Gauth> {
           builder: (context, snapshot) {
             //user is logged in
             if (snapshot.hasData) {
-              return  CustomBottomNavigationBar();
+              return  studentCustomBottomNavigationBar();
             }
             //user is notlogged in
             else {

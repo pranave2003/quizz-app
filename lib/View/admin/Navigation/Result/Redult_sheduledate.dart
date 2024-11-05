@@ -220,14 +220,46 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
                   scrollDirection: Axis.vertical,
                   child: DataTable(
                     columns: const [
-                      DataColumn(label: Text("No",style: TextStyle(fontWeight: FontWeight.bold),)), // New Index Column
-                      DataColumn(label: Text("Name",style: TextStyle(fontWeight: FontWeight.bold),)),
-                      DataColumn(label: Text("Location",style: TextStyle(fontWeight: FontWeight.bold),)),
-                      DataColumn(label: Text("Trade",style: TextStyle(fontWeight: FontWeight.bold),)),
-                      DataColumn(label: Text("Score",style: TextStyle(fontWeight: FontWeight.bold),)),
-                      DataColumn(label: Text("Performance",style: TextStyle(fontWeight: FontWeight.bold),)),
-                      DataColumn(label: Text("Date",style: TextStyle(fontWeight: FontWeight.bold),)),
-                      DataColumn(label: Text("Actions",style: TextStyle(fontWeight: FontWeight.bold),)),
+                      DataColumn(
+                          label: Text(
+                        "No",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )), // New Index Column
+                      DataColumn(
+                          label: Text(
+                        "Name",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                      DataColumn(
+                          label: Text(
+                        "Location",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                      DataColumn(
+                          label: Text(
+                        "Trade",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                      DataColumn(
+                          label: Text(
+                        "Score",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                      DataColumn(
+                          label: Text(
+                        "Performance",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                      DataColumn(
+                          label: Text(
+                        "Date",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                      DataColumn(
+                          label: Text(
+                        "Actions",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
                     ],
                     rows: List<DataRow>.generate(docs.length, (index) {
                       var data = docs[index].data() as Map<String, dynamic>;
@@ -312,5 +344,3 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
     );
   }
 }
-
-var mycolor=Colors.black87;
